@@ -1,0 +1,16 @@
+.app {
+    background: #eeeeff;
+    width: 350px;
+    height: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+
+    .box {
+        border: 2px solid #bbbbbb;
+        border-radius: 5px;
+        background: white;
+        margin: 20px 20px;
+        padding: 20px 20px;
+    }
+}
