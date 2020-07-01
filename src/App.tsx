@@ -9,8 +9,8 @@ interface SurveyState {
     food: string;
 }
 class Survey extends React.Component<{}, SurveyState> { //@{}って何。いるのか
-    constructor() { //@propsはいらないのか、stateは親に持たせて関数にすべきか
-        super({}); //@テキトーに{}を入れたらエラー直った
+    constructor(props: {}) { //@propsはいらないのか、stateは親に持たせて関数にすべきか
+        super(props); //@テキトーに{}を入れたらエラー直った
         this.state = {
         playerName : '',
         playerSex : '',
@@ -108,13 +108,41 @@ const Ranking = () => {
             </div>
         </div>
     );
-}
+};
 
-const Board = () => {
-    
+export interface BingoProps {
+    bingoCard: (number | string)[];
 }
+const Bingo: React.FC<BingoProps> = (props) => {
+    const renderSquare = (i: number) => {
+        return (<div>{props[i]}</div>);
+    };
 
-const Menu = () => {
+    return (
+        <div className="board">
+            <div className="board-row">
+                {renderSquare(0)}
+                {renderSquare(1)}
+                {renderSquare(2)}
+            </div>
+            <div className="board-row">
+                {renderSquare(3)}
+                {renderSquare(4)}
+                {renderSquare(5)}
+            </div>
+            <div className="board-row">
+                {renderSquare(6)}
+                {renderSquare(7)}
+                {renderSquare(8)}
+            </div>
+        </div>
+    );
+};
+
+export interface MenuProps {
+    bingoCard: (number | string)[];
+}
+const Menu: React.FC<MenuProps> = (props) => {
     return (
         <footer>
         <div id="nav-drawer">
@@ -123,10 +151,7 @@ const Menu = () => {
             <label className="nav-unshown" id="nav-close" htmlFor="nav-input"></label>
             <div id="nav-content">
             <Ranking />
-            {/* <Board 
-                squares={this.state.squares}
-            /> */}
-            <Bingo />
+            <Bingo bingoCard={props.bingoCard}/>
             </div>
         </div>
         </footer>
@@ -140,11 +165,46 @@ interface AppState {
     modalIsActive: boolean;
 }
 class App extends React.Component<{}, AppState> {
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            balls: Array(9).fill(0).map((_, i) => i + 1),
+            bingoCard: this.makeBingoCard(),
+            numberOfBingo: 0,
+            modalIsActive: false
+        };
+    }
+
+    makeBingoCard() {
+        const col_1 = this.makeColumn(1);
+        const col_2 = this.makeColumn(4);
+        const col_3 = this.makeColumn(7);
+        const list: Array<number | string> = new Array(9);
+        for (let i: number = 0; i < 3; i++) {
+            list[i * 3 + 0] = col_1[i];
+            list[i * 3 + 1] = col_2[i];
+            list[i * 3 + 2] = col_3[i];
+        }
+        list[4] = '@';
+        console.log(list);
+        return list;
+    }
+    makeColumn(base: number) {
+        const array = Array(3).fill(0).map((_, i) => i + base);
+        const list = [];
+        for (let i: number = 1; i <= 3; i++) {
+            const a: number = Math.floor(Math.random() * array.length);
+            list.push(array[a]);
+            array.splice(a, 1);
+        }
+        return list;
+    }
+
     render() {
         return (
         <div className="app">
             <Survey />
-            <Menu />
+            <Menu bingoCard={this.state.bingoCard} />
         </div>
         );
     }
