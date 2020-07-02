@@ -9,14 +9,14 @@ interface SurveyState {
     food: string;
 }
 class Survey extends React.Component<{}, SurveyState> { //@{}って何。いるのか
-    constructor(props: {}) { //@propsはいらないのか、stateは親に持たせて関数にすべきか
-        super(props); //@テキトーに{}を入れたらエラー直った
-        this.state = {
-        playerName : '',
-        playerSex : '',
-        food : 'apple',
+    constructor(props: {}) {
+        super(props);
+        this.state = { //stateは親に持たせて関数にすべきか
+            playerName : '',
+            playerSex : '',
+            food : 'apple',
         };
-        this.handleInputChange = this.handleInputChange.bind(this); //@いらん？
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     handleInputChange(event: React.ChangeEvent<HTMLInputElement>) { //@型指定がついたことでセレクトボックスの値が受け取れんなった
@@ -24,7 +24,7 @@ class Survey extends React.Component<{}, SurveyState> { //@{}って何。いる�
         if (target != null){
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        this.setState({...this.state, [name]: value}); //@...this.state何これ
+        this.setState({...this.state, [name]: value});
         }
     }
 
@@ -87,24 +87,24 @@ const Ranking = () => {
         <div className="ranking">
             <div className="title">
                 <h2>ランキング</h2>
-                <div className="rows">
-                {rankers.map((ranker, index) => {
-                    return(
-                    <div className="row" key={index}>
-                        <div className="rank">
-                            <div className="round">{ranker.rank}</div>
-                        </div>
-                        <div className="info">
-                            <div className="ranker hide-over">{ranker.name}（{ranker.from}）</div>
-                        <div className="scores sub-row">
-                            <div className="ranker-bingo-number">{ranker.bingoNumber} BINGO</div>
-                            <div className="ranker-score">{ranker.score}</div>
-                        </div>
-                        </div>
+            </div>
+            <div className="rows">
+            {rankers.map((ranker, index) => {
+                return(
+                <div className="row" key={index}>
+                    <div className="rank">
+                        <div className="round">{ranker.rank}</div>
                     </div>
-                    );
-                })}
+                    <div className="info">
+                        <div className="ranker hide-over">{ranker.name}（{ranker.from}）</div>
+                    <div className="scores sub-row">
+                        <div className="ranker-bingo-number">{ranker.bingoNumber} BINGO</div>
+                        <div className="ranker-score">{ranker.score}</div>
+                    </div>
+                    </div>
                 </div>
+                );
+            })}
             </div>
         </div>
     );
@@ -115,7 +115,7 @@ export interface BingoProps {
 }
 const Bingo: React.FC<BingoProps> = (props) => {
     const renderSquare = (i: number) => {
-        return (<div>{props[i]}</div>);
+        return (<div className="square">{props.bingoCard[i]}</div>);
     };
 
     return (
@@ -139,7 +139,7 @@ const Bingo: React.FC<BingoProps> = (props) => {
     );
 };
 
-export interface MenuProps {
+interface MenuProps {
     bingoCard: (number | string)[];
 }
 const Menu: React.FC<MenuProps> = (props) => {
@@ -150,8 +150,8 @@ const Menu: React.FC<MenuProps> = (props) => {
             <label id="nav-open" htmlFor="nav-input"><span></span></label>
             <label className="nav-unshown" id="nav-close" htmlFor="nav-input"></label>
             <div id="nav-content">
-            <Ranking />
-            <Bingo bingoCard={props.bingoCard}/>
+                <Ranking />
+                <Bingo bingoCard={props.bingoCard}/>
             </div>
         </div>
         </footer>
@@ -173,6 +173,10 @@ class App extends React.Component<{}, AppState> {
             numberOfBingo: 0,
             modalIsActive: false
         };
+    }
+  
+    closeModal() {
+      this.setState({modalIsActive: false});
     }
 
     makeBingoCard() {
@@ -200,10 +204,60 @@ class App extends React.Component<{}, AppState> {
         return list;
     }
 
+    galapon() {
+        const bingoCard = this.state.bingoCard.slice();
+        
+        const a = Math.floor(Math.random() * this.state.balls.length);
+        const ball = this.state.balls[a];
+        this.state.balls.splice(a, 1);
+        const foundIndex = this.state.bingoCard.findIndex(number => number === ball);
+        bingoCard[foundIndex] = '@';
+        
+        this.setState({
+            bingoCard: bingoCard, 
+            numberOfBingo: this.checkBingo(bingoCard),
+            modalIsActive: true
+        });
+    }
+
+    checkBingo(bingoCard: (number | string)[]) {
+        let counter = 0;
+        const lines = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+        for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (bingoCard[a] === '@' && bingoCard[b] === '@' && bingoCard[c] === '@') {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     render() {
+        let className = 'modal';
+        if (this.state.modalIsActive) {
+          className += ' active';
+        }
+        
         return (
         <div className="app">
             <Survey />
+            <div className={className} onClick={() => this.closeModal()}>
+                <Bingo 
+                    bingoCard={this.state.bingoCard}
+                />
+            </div>
+            <button onClick={() => this.galapon()}>ガラポンを回す</button>
+            <div>ビンゴ数：{this.state.numberOfBingo}</div>
+
             <Menu bingoCard={this.state.bingoCard} />
         </div>
         );
