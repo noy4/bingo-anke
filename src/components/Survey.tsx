@@ -1,34 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-interface SurveyState {
-    playerName: string;
-    playerSex: string;
-    food: string;
-}
-class Survey extends React.Component<{}, SurveyState> { //@{}って何。いるのか
-    constructor(props: {}) {
-        super(props);
-        this.state = { //stateは親に持たせて関数にすべきか
-            playerName : '',
-            playerSex : '',
-            food : 'apple',
-        };
-        this.handleInputChange = this.handleInputChange.bind(this);
-    }
+const Survey = () => {
+    const [posts, setPosts] = useState({
+        playerName: '',
+        playerSex: '',
+    });
 
-    handleInputChange(event: React.ChangeEvent<HTMLInputElement>) { //@型指定がついたことでセレクトボックスの値が受け取れんなった
+    function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const target = event.target;
         if (target != null){
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        this.setState({...this.state, [name]: value});
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+            setPosts(state => ({...state, [name]: value}));
         }
     }
 
-    render() {
-        const title = "タイプスクリプト版アンケート";
+    const title = "タイプスクリプト版アンケート";
 
-        return (
+    return (
         <form>
             <div className="title box"><h1>{title}</h1></div>
 
@@ -38,8 +27,8 @@ class Survey extends React.Component<{}, SurveyState> { //@{}って何。いる�
                 <input 
                 name="playerName"
                 type="text"
-                value={this.state.playerName}
-                onChange={this.handleInputChange} />
+                value={posts.playerName}
+                onChange={handleInputChange} />
             </label>
             </div>
             <div className="player-sex box">
@@ -49,8 +38,8 @@ class Survey extends React.Component<{}, SurveyState> { //@{}って何。いる�
                 name="playerSex"
                 type="radio"
                 value="male"
-                checked={this.state.playerSex === 'male'}
-                onChange={this.handleInputChange}
+                checked={posts.playerSex === 'male'}
+                onChange={handleInputChange}
                 className="player-sex-input"/>
                 男性
             </label>
@@ -59,16 +48,15 @@ class Survey extends React.Component<{}, SurveyState> { //@{}って何。いる�
                 name="playerSex"
                 type="radio"
                 value="female"
-                checked={this.state.playerSex === 'female'}
-                onChange={this.handleInputChange}
+                checked={posts.playerSex === 'female'}
+                onChange={handleInputChange}
                 className="player-sex-input"/>
                 女性
             </label>
             </div>
             
         </form>
-        );
-    }
-}
+    );
+};
 
 export default Survey;
