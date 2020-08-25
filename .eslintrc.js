@@ -38,6 +38,7 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
-        "semi": "error"
+        "semi": "error",
+        "react/prop-types": 0
     }
 };

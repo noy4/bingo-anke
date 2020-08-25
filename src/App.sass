@@ -180,45 +180,45 @@
                             font-family: 'arial black'
                             font-style: italic
 
-    .board
-        .board-row
-            &:after
-                clear: both
-                content: ""
-                display: table
+.board
+    .board-row
+        &:after
+            clear: both
+            content: ""
+            display: table
 
-            .square
-                display: inline-block
-                border: 2px solid red
-                float: left
-                font-size: 55px
-                font-weight: bold
-                width: 80px
-                height: 80px
-                text-align: center
-                margin-right: -2px
-                margin-top: -2px
-                padding: 0
-                background: white
-                    
-    .modal
-        opacity: 0
-        visibility: hidden
-        transition: opacity .3s, visibility 0s ease 1s
+        .square
+            display: inline-block
+            border: 2px solid red
+            float: left
+            font-size: 55px
+            font-weight: bold
+            width: 80px
+            height: 80px
+            text-align: center
+            margin-right: -2px
+            margin-top: -2px
+            padding: 0
+            background: white
+                
+.modal
+    opacity: 0
+    visibility: hidden
+    transition: opacity .3s, visibility 0s ease 1s
 
-        background: rgba(0, 0, 0, 0.5)
-        position: fixed
-        top: 0
-        right: 0
-        left: 0
-        padding-top: 100px
-        width: 100%
-        height: 100%
-        display: flex
-        justify-content: center
+    background: rgba(0, 0, 0, 0.5)
+    position: fixed
+    top: 0
+    right: 0
+    left: 0
+    padding-top: 100px
+    width: 100%
+    height: 100%
+    display: flex
+    justify-content: center
 
-        &.active
-            transition-delay: 0s
+    &.active
+        transition-delay: 0s
 
-            opacity: 1
-            visibility: visible
+        opacity: 1
+        visibility: visible
