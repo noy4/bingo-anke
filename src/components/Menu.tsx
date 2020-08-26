@@ -1,6 +1,6 @@
 import React from 'react';
 import Ranking from './Ranking';
-import Bingo from './Bingo';
+import Bingo, {BingoProps} from './Bingo';
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Grid, Box
@@ -13,10 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-interface MenuProps {
-    bingoCard: (number | string)[];
-}
-const Menu: React.FC<MenuProps> = (props) => {
+const Menu: React.FC<BingoProps> = (props) => {
     const classes = useStyles();
 
     return (

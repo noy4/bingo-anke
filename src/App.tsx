@@ -43,19 +43,15 @@ const App = () => {
     const [bingoCard, setBingoCard] = useState(makeBingoCard());
     const [numberOfBingo, setNumberOfBingo] = useState(0);
     const [slotValue, setSlotValue] = useState(9);
+    const [score, setScore] = useState(0);
 
 
     function makeBingoCard() {
         const col_1 = makeColumn(1);
         const col_2 = makeColumn(4);
         const col_3 = makeColumn(7);
-        const list: Array<number | string> = new Array(9);
-        for (let i: number = 0; i < 3; i++) {
-            list[i * 3 + 0] = col_1[i];
-            list[i * 3 + 1] = col_2[i];
-            list[i * 3 + 2] = col_3[i];
-        }
-        list[4] = '@';
+        const list = [...col_1, ...col_2, ...col_3];
+        list[4].value = 0;
         // console.log(list);
         return list;
     }
@@ -63,15 +59,15 @@ const App = () => {
         const array = Array(3).fill(0).map((_, i) => i + base);
         const list = [];
         for (let i: number = 1; i <= 3; i++) {
-            const a: number = Math.floor(Math.random() * array.length);
-            list.push(array[a]);
+            const a: number = ~~(Math.random() * array.length);
+            list.push({'value': array[a], 'isValid': false});
             array.splice(a, 1);
         }
         return list;
     }
 
     function slot() {
-        const a = Math.floor(Math.random() * balls.length);
+        const a = ~~(Math.random() * balls.length);
         setSlotValue(balls[a]);
     }
 
@@ -90,12 +86,15 @@ const App = () => {
         await sleep(1000);
 
         updatedBalls.splice(a, 1);
-        const foundIndex = updatedBingoCard.findIndex(number => number === ball);
-        updatedBingoCard[foundIndex] = '@';
+        const foundIndex = updatedBingoCard.findIndex(number => number.value === ball);
+        if (foundIndex !== -1) {
+            updatedBingoCard[foundIndex].isValid = true;
+            setScore(score + ball);
+        }
 
         setBalls(updatedBalls);
         setBingoCard(updatedBingoCard);
-        setNumberOfBingo(checkBingo(bingoCard));
+        setNumberOfBingo(checkBingo());
     }
 
     function sleep(waitSec: number) {
@@ -104,7 +103,7 @@ const App = () => {
         });
     }
 
-    function checkBingo(bingoCard: (number | string)[]) {
+    function checkBingo() {
         let counter = 0;
         const lines = [
             [0, 1, 2],
@@ -118,7 +117,7 @@ const App = () => {
         ];
         for (let i = 0; i < lines.length; i++) {
             const [a, b, c] = lines[i];
-            if (bingoCard[a] === '@' && bingoCard[b] === '@' && bingoCard[c] === '@') {
+            if (bingoCard[a].isValid && bingoCard[b].isValid && bingoCard[c].isValid) {
                 counter++;
             }
         }
@@ -144,6 +143,10 @@ const App = () => {
             </Drawer>
 
             <Survey galapon={galapon} />
+            <ul>
+                <li>numberOfBingo: {numberOfBingo}</li>
+                <li>score: {score}</li>
+            </ul>
             
             <Modal
                 open={modal}
