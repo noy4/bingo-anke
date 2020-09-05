@@ -1,5 +1,5 @@
 import React from 'react';
-import Ranking from './Ranking';
+import Ranking, {RankingProps} from './Ranking';
 import Bingo, {BingoProps} from './Bingo';
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -13,12 +13,14 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const Menu: React.FC<BingoProps> = (props) => {
+interface MenuProps extends RankingProps, BingoProps {}
+
+const Menu: React.FC<MenuProps> = (props) => {
     const classes = useStyles();
 
     return (
         <Grid container wrap="nowrap" direction="column" alignItems="center" className={classes.drawerGrid}>
-            <Ranking />
+            <Ranking rankers={props.rankers} />
             <Box pb={4}>
                 <Bingo bingoCard={props.bingoCard} />
             </Box>

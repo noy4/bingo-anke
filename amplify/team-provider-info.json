@@ -1,15 +1,15 @@
 {
     "production": {
         "awscloudformation": {
-            "AuthRoleName": "amplify-bingo-anke-production-214452-authRole",
-            "UnauthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-214452-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-214452-authRole",
+            "AuthRoleName": "amplify-bingo-anke-production-13950-authRole",
+            "UnauthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-13950-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-13950-authRole",
             "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-bingo-anke-production-214452-deployment",
-            "UnauthRoleName": "amplify-bingo-anke-production-214452-unauthRole",
-            "StackName": "amplify-bingo-anke-production-214452",
-            "StackId": "arn:aws:cloudformation:us-east-1:861065671172:stack/amplify-bingo-anke-production-214452/75218800-e087-11ea-a0ae-0a5afd1032bb",
-            "AmplifyAppId": "dvw0epirbcxcd"
+            "DeploymentBucketName": "amplify-bingo-anke-production-13950-deployment",
+            "UnauthRoleName": "amplify-bingo-anke-production-13950-unauthRole",
+            "StackName": "amplify-bingo-anke-production-13950",
+            "StackId": "arn:aws:cloudformation:us-east-1:861065671172:stack/amplify-bingo-anke-production-13950/6fed9830-eadf-11ea-a72d-0e9711d18427",
+            "AmplifyAppId": "d3efwy5vjd8azj"
         }
     }
 }

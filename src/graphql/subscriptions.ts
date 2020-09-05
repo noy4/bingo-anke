@@ -7,7 +7,10 @@ export const onCreatePost = /* GraphQL */ `
       type
       id
       content
-      owner
+      displayName
+      playerFrom
+      numberOfBingo
+      score
       timestamp
     }
   }
@@ -18,7 +21,10 @@ export const onUpdatePost = /* GraphQL */ `
       type
       id
       content
-      owner
+      displayName
+      playerFrom
+      numberOfBingo
+      score
       timestamp
     }
   }
@@ -29,7 +35,10 @@ export const onDeletePost = /* GraphQL */ `
       type
       id
       content
-      owner
+      displayName
+      playerFrom
+      numberOfBingo
+      score
       timestamp
     }
   }

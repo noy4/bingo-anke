@@ -1,10 +1,14 @@
 type Post
-  @model (subscriptions: { level: public })
+  @model
   @key(name: "SortByTimestamp", fields:["type", "timestamp"], queryField: "listPostsSortedByTimestamp")
+  @key(name: "SortByScore", fields:["type", "numberOfBingo", "score"], queryField: "listPostsSortedByScore")
 {
-  type: String! # always set to 'post'. used in the SortByTimestamp GSI
+  type: String!
   id: ID
-  content: String!
-  owner: String
+  content: AWSJSON!
+  displayName: String!
+  playerFrom: String!
+  numberOfBingo: Int!
+  score: Int!
   timestamp: AWSTimestamp!
 }

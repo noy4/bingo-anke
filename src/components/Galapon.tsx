@@ -8,7 +8,7 @@ import CheckCircleOutlineRounded from '@material-ui/icons/CheckCircleOutlineRoun
 
 interface GalaponProps {
     galapon: () => void,
-    galable: boolean,
+    galable?: boolean,
 }
 
 export default function Galapon(props: GalaponProps) {
@@ -32,3 +32,7 @@ export default function Galapon(props: GalaponProps) {
         </Grid>
     );
 }
+
+Galapon.defaultProps = {
+    galable: true,
+};

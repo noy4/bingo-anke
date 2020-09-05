@@ -21,11 +21,8 @@ interface Square {
     value: number,
     isValid: boolean
 }
-interface BingoCard {
-    [index: number]: Square,
-}
 export interface BingoProps {
-    bingoCard: BingoCard,
+    bingoCard: Square[],
 }
 const Bingo: React.FC<BingoProps> = (props) => {
     const classes = useStyles();

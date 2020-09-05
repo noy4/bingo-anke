@@ -6,14 +6,20 @@ export type CreatePostInput = {
   type: string,
   id?: string | null,
   content: string,
-  owner?: string | null,
+  displayName: string,
+  playerFrom: string,
+  numberOfBingo: number,
+  score: number,
   timestamp: number,
 };
 
 export type ModelPostConditionInput = {
   type?: ModelStringInput | null,
   content?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
+  displayName?: ModelStringInput | null,
+  playerFrom?: ModelStringInput | null,
+  numberOfBingo?: ModelIntInput | null,
+  score?: ModelIntInput | null,
   timestamp?: ModelIntInput | null,
   and?: Array< ModelPostConditionInput | null > | null,
   or?: Array< ModelPostConditionInput | null > | null,
@@ -76,7 +82,10 @@ export type UpdatePostInput = {
   type?: string | null,
   id: string,
   content?: string | null,
-  owner?: string | null,
+  displayName?: string | null,
+  playerFrom?: string | null,
+  numberOfBingo?: number | null,
+  score?: number | null,
   timestamp?: number | null,
 };
 
@@ -88,7 +97,10 @@ export type ModelPostFilterInput = {
   type?: ModelStringInput | null,
   id?: ModelIDInput | null,
   content?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
+  displayName?: ModelStringInput | null,
+  playerFrom?: ModelStringInput | null,
+  numberOfBingo?: ModelIntInput | null,
+  score?: ModelIntInput | null,
   timestamp?: ModelIntInput | null,
   and?: Array< ModelPostFilterInput | null > | null,
   or?: Array< ModelPostFilterInput | null > | null,
@@ -126,6 +138,21 @@ export enum ModelSortDirection {
 }
 
 
+export type ModelPostSortByScoreCompositeKeyConditionInput = {
+  eq?: ModelPostSortByScoreCompositeKeyInput | null,
+  le?: ModelPostSortByScoreCompositeKeyInput | null,
+  lt?: ModelPostSortByScoreCompositeKeyInput | null,
+  ge?: ModelPostSortByScoreCompositeKeyInput | null,
+  gt?: ModelPostSortByScoreCompositeKeyInput | null,
+  between?: Array< ModelPostSortByScoreCompositeKeyInput | null > | null,
+  beginsWith?: ModelPostSortByScoreCompositeKeyInput | null,
+};
+
+export type ModelPostSortByScoreCompositeKeyInput = {
+  numberOfBingo?: number | null,
+  score?: number | null,
+};
+
 export type CreatePostMutationVariables = {
   input: CreatePostInput,
   condition?: ModelPostConditionInput | null,
@@ -137,7 +164,10 @@ export type CreatePostMutation = {
     type: string,
     id: string | null,
     content: string,
-    owner: string | null,
+    displayName: string,
+    playerFrom: string,
+    numberOfBingo: number,
+    score: number,
     timestamp: number,
   } | null,
 };
@@ -153,7 +183,10 @@ export type UpdatePostMutation = {
     type: string,
     id: string | null,
     content: string,
-    owner: string | null,
+    displayName: string,
+    playerFrom: string,
+    numberOfBingo: number,
+    score: number,
     timestamp: number,
   } | null,
 };
@@ -169,7 +202,10 @@ export type DeletePostMutation = {
     type: string,
     id: string | null,
     content: string,
-    owner: string | null,
+    displayName: string,
+    playerFrom: string,
+    numberOfBingo: number,
+    score: number,
     timestamp: number,
   } | null,
 };
@@ -184,7 +220,10 @@ export type GetPostQuery = {
     type: string,
     id: string | null,
     content: string,
-    owner: string | null,
+    displayName: string,
+    playerFrom: string,
+    numberOfBingo: number,
+    score: number,
     timestamp: number,
   } | null,
 };
@@ -203,7 +242,10 @@ export type ListPostsQuery = {
       type: string,
       id: string | null,
       content: string,
-      owner: string | null,
+      displayName: string,
+      playerFrom: string,
+      numberOfBingo: number,
+      score: number,
       timestamp: number,
     } | null > | null,
     nextToken: string | null,
@@ -227,7 +269,37 @@ export type ListPostsSortedByTimestampQuery = {
       type: string,
       id: string | null,
       content: string,
-      owner: string | null,
+      displayName: string,
+      playerFrom: string,
+      numberOfBingo: number,
+      score: number,
+      timestamp: number,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
+
+export type ListPostsSortedByScoreQueryVariables = {
+  type?: string | null,
+  numberOfBingoScore?: ModelPostSortByScoreCompositeKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelPostFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListPostsSortedByScoreQuery = {
+  listPostsSortedByScore:  {
+    __typename: "ModelPostConnection",
+    items:  Array< {
+      __typename: "Post",
+      type: string,
+      id: string | null,
+      content: string,
+      displayName: string,
+      playerFrom: string,
+      numberOfBingo: number,
+      score: number,
       timestamp: number,
     } | null > | null,
     nextToken: string | null,
@@ -238,9 +310,12 @@ export type OnCreatePostSubscription = {
   onCreatePost:  {
     __typename: "Post",
     type: string,
-    id: string,
+    id: string | null,
     content: string,
-    owner: string | null,
+    displayName: string,
+    playerFrom: string,
+    numberOfBingo: number,
+    score: number,
     timestamp: number,
   } | null,
 };
@@ -251,7 +326,10 @@ export type OnUpdatePostSubscription = {
     type: string,
     id: string | null,
     content: string,
-    owner: string | null,
+    displayName: string,
+    playerFrom: string,
+    numberOfBingo: number,
+    score: number,
     timestamp: number,
   } | null,
 };
@@ -262,7 +340,10 @@ export type OnDeletePostSubscription = {
     type: string,
     id: string | null,
     content: string,
-    owner: string | null,
+    displayName: string,
+    playerFrom: string,
+    numberOfBingo: number,
+    score: number,
     timestamp: number,
   } | null,
 };

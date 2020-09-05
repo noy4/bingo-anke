@@ -7,7 +7,10 @@ export const getPost = /* GraphQL */ `
       type
       id
       content
-      owner
+      displayName
+      playerFrom
+      numberOfBingo
+      score
       timestamp
     }
   }
@@ -23,7 +26,10 @@ export const listPosts = /* GraphQL */ `
         type
         id
         content
-        owner
+        displayName
+        playerFrom
+        numberOfBingo
+        score
         timestamp
       }
       nextToken
@@ -51,7 +57,41 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
         type
         id
         content
-        owner
+        displayName
+        playerFrom
+        numberOfBingo
+        score
+        timestamp
+      }
+      nextToken
+    }
+  }
+`;
+export const listPostsSortedByScore = /* GraphQL */ `
+  query ListPostsSortedByScore(
+    $type: String
+    $numberOfBingoScore: ModelPostSortByScoreCompositeKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPostsSortedByScore(
+      type: $type
+      numberOfBingoScore: $numberOfBingoScore
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        type
+        id
+        content
+        displayName
+        playerFrom
+        numberOfBingo
+        score
         timestamp
       }
       nextToken

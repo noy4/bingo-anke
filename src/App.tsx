@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Survey from './components/Survey';
 import Menu from './components/Menu';
 import Bingo from './components/Bingo';
-import './App.sass';
+import API, { graphqlOperation } from '@aws-amplify/api';
+import { CreatePostInput } from './API';
+import { listPostsSortedByScore } from './graphql/queries';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Container, CssBaseline, Fab, Drawer,
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     fab: {
         position: "fixed",
         bottom: 4,
+        zIndex: 10,
     },
     slot: {
         padding: theme.spacing(8),
@@ -32,6 +35,14 @@ const useStyles = makeStyles((theme) => ({
     }
 
 }));
+
+interface Ranker {
+    rank: number,
+    name: string,
+    from: string,
+    bingoNumber: number,
+    score: number,
+}
 
 const App = () => {
     const classes = useStyles();
@@ -45,13 +56,29 @@ const App = () => {
     const [slotValue, setSlotValue] = useState(9);
     const [score, setScore] = useState(0);
 
+    const [rankers, setRankers] = useState<Ranker[]>([
+        { rank: 1, name: '二宮', from: '愛媛大学', bingoNumber: 12, score: 488 },
+        { rank: 2, name: '櫻井しょー', from: '長崎美容専門学校', bingoNumber: 7, score: 302 },
+        { rank: 2, name: '相葉', from: '九州大学', bingoNumber: 7, score: 302 },
+        { rank: 3, name: 'MJ', from: '大衆食堂しゃーき', bingoNumber: 6, score: 127 },
+        { rank: 4, name: '大野', from: '早稲田大学', bingoNumber: 5, score: 92 },
+        { rank: 1, name: '二宮', from: '愛媛大学', bingoNumber: 12, score: 488 },
+        { rank: 2, name: '櫻井しょー', from: '長崎美容専門学校', bingoNumber: 7, score: 302 },
+        { rank: 2, name: '相葉', from: '九州大学', bingoNumber: 7, score: 302 },
+        { rank: 3, name: 'MJ', from: '大衆食堂しゃーき', bingoNumber: 6, score: 127 },
+        { rank: 4, name: '大野', from: '早稲田大学', bingoNumber: 5, score: 92 },
+    ]);
+
 
     function makeBingoCard() {
         const col_1 = makeColumn(1);
         const col_2 = makeColumn(4);
         const col_3 = makeColumn(7);
         const list = [...col_1, ...col_2, ...col_3];
-        list[4].value = 0;
+        list[4] = {
+            'value': 0,
+            'isValid': true,
+        };
         // console.log(list);
         return list;
     }
@@ -124,6 +151,29 @@ const App = () => {
         return counter;
     }
 
+    const getPosts = async (nextToken = null) => {
+        const res = await API.graphql(graphqlOperation(listPostsSortedByScore, {
+            type: "post",
+            sortDirection: 'DESC',
+            limit: 20,
+            nextToken: nextToken,
+        }));
+        const newRankers = res.data.listPostsSortedByScore.items.map((post: CreatePostInput) => (
+            {
+                rank: 0,
+                name: post.displayName,
+                from: post.playerFrom,
+                bingoNumber: post.numberOfBingo,
+                score: post.score
+            }
+        ));
+        setRankers(state => ([...newRankers, ...state]));
+    };
+
+    useEffect(() => {
+        getPosts();
+    }, []);
+
     return (
         <Container className={classes.root} maxWidth="xs">
             <CssBaseline />
@@ -139,10 +189,14 @@ const App = () => {
                 open={drawer}
                 onClose={() => setDrawer(false)}
             >
-                <Menu bingoCard={bingoCard} />
+                <Menu rankers={rankers} bingoCard={bingoCard} />
             </Drawer>
 
-            <Survey galapon={galapon} />
+            <Survey
+                galapon={galapon}
+                numberOfBingo={numberOfBingo}
+                score={score}
+            />
             <ul>
                 <li>numberOfBingo: {numberOfBingo}</li>
                 <li>score: {score}</li>

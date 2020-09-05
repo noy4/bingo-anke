@@ -10,7 +10,10 @@ export const createPost = /* GraphQL */ `
       type
       id
       content
-      owner
+      displayName
+      playerFrom
+      numberOfBingo
+      score
       timestamp
     }
   }
@@ -24,7 +27,10 @@ export const updatePost = /* GraphQL */ `
       type
       id
       content
-      owner
+      displayName
+      playerFrom
+      numberOfBingo
+      score
       timestamp
     }
   }
@@ -38,7 +44,10 @@ export const deletePost = /* GraphQL */ `
       type
       id
       content
-      owner
+      displayName
+      playerFrom
+      numberOfBingo
+      score
       timestamp
     }
   }
