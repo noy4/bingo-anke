@@ -13,12 +13,15 @@ const useStyles = makeStyles((theme) => ({
     ranking: {
         overflow: "auto",
         flexGrow: 1,
-        marginBottom: theme.spacing(2),
+        // marginBottom: theme.spacing(2),
     },
-
+    rankerName: {
+        width: '220px',
+        paddingRight: theme.spacing(4),
+    },
 }));
 
-interface Ranker {
+export interface Ranker {
     rank: number,
     name: string,
     from: string,
@@ -44,7 +47,7 @@ const Ranking: React.FC<RankingProps> = (props) => {
                                 <Avatar>{index + 1}</Avatar>
                             </ListItemAvatar>
                             <Grid item xs={8}>
-                                <Typography noWrap>{ranker.name}({ranker.from})</Typography>
+                                <Typography noWrap className={classes.rankerName}>{ranker.name}({ranker.from})</Typography>
                                 <Grid container justify="space-between">
                                     <Typography>{ranker.bingoNumber}BINGO</Typography>
                                     <Typography>{ranker.score}</Typography>

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import {
     Grid, Button,
 } from '@material-ui/core';
@@ -23,7 +23,7 @@ export default function Galapon(props: GalaponProps) {
                 disableElevation
                 onClick={() => {
                     props.galapon();
-                    // setDisabled(true);
+                    setDisabled(true);
                 }}
                 disabled={!props.galable || disabled}
             >

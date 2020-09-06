@@ -19,9 +19,15 @@ const Menu: React.FC<MenuProps> = (props) => {
     const classes = useStyles();
 
     return (
-        <Grid container wrap="nowrap" direction="column" alignItems="center" className={classes.drawerGrid}>
+        <Grid
+            container
+            wrap="nowrap"
+            direction="column"
+            alignItems="center"
+            className={classes.drawerGrid}
+        >
             <Ranking rankers={props.rankers} />
-            <Box pb={4}>
+            <Box p={2}>
                 <Bingo bingoCard={props.bingoCard} />
             </Box>
         </Grid>

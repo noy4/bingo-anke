@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Survey from './components/Survey';
 import Menu from './components/Menu';
+import { Ranker } from './components/Ranking';//eslint-disable-line 
 import Bingo from './components/Bingo';
 import API, { graphqlOperation } from '@aws-amplify/api';
-import { CreatePostInput } from './API';
+import { CreatePostInput } from './API';//eslint-disable-line
 import { listPostsSortedByScore } from './graphql/queries';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -35,14 +36,6 @@ const useStyles = makeStyles((theme) => ({
     }
 
 }));
-
-interface Ranker {
-    rank: number,
-    name: string,
-    from: string,
-    bingoNumber: number,
-    score: number,
-}
 
 const App = () => {
     const classes = useStyles();
@@ -107,7 +100,7 @@ const App = () => {
         const updatedBingoCard = bingoCard.slice();
         const updatedBalls = balls.slice();
 
-        const a = Math.floor(Math.random() * balls.length);
+        const a = ~~(Math.random() * balls.length);
         const ball = balls[a];
         setSlotValue(ball);
         await sleep(1000);
