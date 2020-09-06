@@ -9,7 +9,7 @@ import { listPostsSortedByScore } from './graphql/queries';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Container, CssBaseline, Fab, Drawer,
-    Grid, Avatar, Box, Modal,
+    Grid, Avatar, Box, Modal, LinearProgress,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
     root: {
         background: "#bbdefb",
         padding: theme.spacing(2),
+    },
+    progressBar: {
+        position: 'fixed',
+        width: '100vw',
+        top: 0,
+        left: 0,
     },
     fab: {
         position: "fixed",
@@ -40,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
     const classes = useStyles();
 
+    const [progress, setProgress] = useState(0);
     const [drawer, setDrawer] = useState(false);
     const [modal, setModal] = useState(false);
 
@@ -144,6 +151,17 @@ const App = () => {
         return counter;
     }
 
+    function calculateScrollRate() {
+        const innerHeight = window.innerHeight;
+        const element = document.getElementById('root') || new HTMLHtmlElement();
+        const rect = element?.getBoundingClientRect();
+        const elementHeight = rect?.height;
+        const scrollMax = elementHeight - innerHeight;
+        const scrollY = window.pageYOffset;
+        const scrollRate = ~~(scrollY / scrollMax * 100);
+        setProgress(scrollRate);
+    }
+
     const getPosts = async (nextToken = null) => {
         const res = await API.graphql(graphqlOperation(listPostsSortedByScore, {
             type: "post",
@@ -165,10 +183,12 @@ const App = () => {
 
     useEffect(() => {
         getPosts();
+        document.addEventListener('scroll', calculateScrollRate);
     }, []);
 
     return (
         <Container className={classes.root} maxWidth="xs">
+            <LinearProgress variant='determinate' value={progress} className={classes.progressBar} />
             <CssBaseline />
             <Fab
                 className={classes.fab}

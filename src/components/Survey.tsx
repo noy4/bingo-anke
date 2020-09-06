@@ -7,7 +7,7 @@ import { CreatePostInput, OnCreatePostSubscription } from '../API';//eslint-disa
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Paper, Typography, TextField, RadioGroup, Radio,
-    FormControlLabel, Grid, Button,
+    FormControlLabel, Grid, Button, FormGroup, Checkbox,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -20,11 +20,14 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         padding: theme.spacing(2),
-        margin: theme.spacing(0, 2, 2),
+        margin: theme.spacing(0, 1, 2),
     },
     nameField: {
         width: '45%',
         marginRight: '5%',
+    },
+    rowRadio: {
+        margin: '0',
     }
 }));
 
@@ -56,17 +59,18 @@ const Survey = (props: SurveyProps) => {
         if (target != null) {
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
+            console.log(name);
             setvalues(state => ({ ...state, [name]: value }));
         }
     }
 
     const onPost = async () => {
-        const { playerFamilyName, playerRankingName, playerFrom, ...contents } = values;
+        const { playerRankingName, playerFrom, ...contents } = values;
         const res = await API.graphql(graphqlOperation(createPost, {
             input: {
                 type: 'post',
                 content: JSON.stringify(contents),
-                displayName: playerRankingName || playerFamilyName,
+                displayName: playerRankingName || values.playerFamilyName,
                 playerFrom: playerFrom || '',
                 numberOfBingo: props.numberOfBingo,
                 score: props.score,
@@ -97,7 +101,7 @@ const Survey = (props: SurveyProps) => {
                     {title}
                 </Typography>
             </Paper>
-            <form onSubmit={(e) => {e.preventDefault(); onPost();}}>
+            <form onSubmit={(e) => { e.preventDefault(); onPost(); }}>
                 <Paper className={classes.paper}>
                     <Typography variant="h6">
                         名前
@@ -137,7 +141,7 @@ const Survey = (props: SurveyProps) => {
                         fullWidth
                     />
                     <Galapon
-                        galable={Boolean(values.playerFamilyName?.trim())}
+                        galable={Boolean(values.playerFamilyName?.trim() || values.playerRankingName?.trim())}
                         galapon={props.galapon} />
                 </Paper>
                 <Paper className={classes.paper}>
@@ -174,6 +178,71 @@ const Survey = (props: SurveyProps) => {
                         galable={Boolean(values.playerSex)}
                     />
                 </Paper>
+                <Paper className={classes.paper}>
+                    <Typography variant="subtitle1">
+                        楽しかったですか。
+                    </Typography>
+                    <Grid container justify='space-between'>
+                        <Typography variant='subtitle2'>そう思わない</Typography>
+                        <Typography variant='subtitle2'>そう思う</Typography>
+                    </Grid>
+                    <Grid container justify='center'>
+                        <RadioGroup
+                            row
+                            aria-label="fivePoint"
+                            name="fivePoint"
+                            value={values.fivePoint || ''}
+                            onChange={handleInputChange}>
+
+                            <FormControlLabel value="one" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="1" />
+                            <FormControlLabel value="two" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="2" />
+                            <FormControlLabel value="three" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="3" />
+                            <FormControlLabel value="four" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="4" />
+                            <FormControlLabel value="five" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="5" />
+                        </RadioGroup>
+                    </Grid>
+                    <Galapon
+                        galapon={props.galapon}
+                        galable={Boolean(values.fivePoint)}
+                    />
+                </Paper>
+                <Paper className={classes.paper}>
+                    <Typography variant="subtitle1">
+                        どの辺がどういうふうにどの程度楽しかったですか。
+                    </Typography>
+                    <TextField
+                        name="textarea"
+                        onChange={handleInputChange}
+                        value={values.textarea || ''}
+                        placeholder="回答"
+                        margin="normal"
+                        fullWidth
+                        multiline
+                    />
+                    <Galapon
+                        galable={Boolean(values.textarea?.trim())}
+                        galapon={props.galapon} />
+                </Paper>
+                <Paper className={classes.paper}>
+                    <Typography variant="subtitle1">
+                        次のうちどのSNSを使いますか。
+                    </Typography>
+                    <FormGroup
+                        aria-label="checkbox"
+                        onChange={handleInputChange}>
+
+                        <FormControlLabel control={<Checkbox name='line' checked={values.line || false} />} label="LINE" />
+                        <FormControlLabel control={<Checkbox name='facebook' checked={values.facebook || false} />} label="Facebook" />
+                        <FormControlLabel control={<Checkbox name='instagram' checked={values.instagram || false} />} label="Instagram" />
+                        <FormControlLabel control={<Checkbox name='tiktok' checked={values.tiktok || false} />} label="TikTok" />
+                        <FormControlLabel control={<Checkbox name='twitter' checked={values.twitter || false} />} label="Twitter" />
+                    </FormGroup>
+                    <Galapon
+                        galapon={props.galapon}
+                        galable={Boolean(values.checkbox)}
+                    />
+                </Paper>
+
                 <Grid container justify="flex-end">
                     <Button type="submit" variant="contained" color="primary">
                         送信

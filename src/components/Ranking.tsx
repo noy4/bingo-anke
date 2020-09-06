@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => ({
         // marginBottom: theme.spacing(2),
     },
     rankerName: {
-        width: '220px',
-        paddingRight: theme.spacing(4),
+        width: '100%',
+        // paddingRight: theme.spacing(4),
     },
 }));
 
