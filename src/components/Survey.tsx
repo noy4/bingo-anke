@@ -91,7 +91,7 @@ const Survey = (props: SurveyProps) => {
         return () => subscription.unsubscribe();
     }, []);
 
-    const title = "タイプスクリプト版アンケート";
+    const title = "あなたについてのアンケート";
 
     return (
         <>
