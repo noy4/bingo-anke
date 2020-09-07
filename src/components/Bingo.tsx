@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold',
     },
     avatarColor: {
-        backgroundColor: 'grey',
+        backgroundColor: '#ccc',
     },
     validAvatarColor: {
         backgroundColor: 'red',
@@ -29,7 +29,7 @@ const Bingo: React.FC<BingoProps> = (props) => {
 
     const renderSquare = (i: number) => {
         return (
-            <Box bgcolor='white' p={2} m={0.5}>
+            <Box bgcolor='white' p={2} m={0.5} borderRadius='10px'>
                 <Avatar
                     className={
                         clsx(classes.avatar,
@@ -44,7 +44,7 @@ const Bingo: React.FC<BingoProps> = (props) => {
     };
 
     return (
-        <Box bgcolor="black" p={1}>
+        <Box bgcolor="black" p={1} borderRadius='5px'>
             <Grid container>
                 <Grid item container direction='column' xs={4}>
                     {renderSquare(0)}

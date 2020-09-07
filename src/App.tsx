@@ -4,8 +4,9 @@ import Menu from './components/Menu';
 import { Ranker } from './components/Ranking';//eslint-disable-line 
 import Bingo from './components/Bingo';
 import API, { graphqlOperation } from '@aws-amplify/api';
-import { CreatePostInput } from './API';//eslint-disable-line
+import { CreatePostInput, OnCreatePostSubscription } from './API';//eslint-disable-line
 import { listPostsSortedByScore } from './graphql/queries';
+import { onCreatePost } from './graphql/subscriptions';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Container, CssBaseline, Fab, Drawer,
@@ -30,18 +31,37 @@ const useStyles = makeStyles((theme) => ({
         width: '100vw',
         top: 0,
         left: 0,
+        zIndex: 10,
     },
     fab: {
         position: "fixed",
         bottom: 4,
         zIndex: 10,
     },
-    slot: {
+    slots: {
+        height: '20vh',
+        margin: '10vh 0 5vh',
+    },
+    slot1: {
         padding: theme.spacing(8),
-        margin: theme.spacing(5),
-    }
+        fontSize: '4em',
+    },
+    slot2: {
+        padding: theme.spacing(6),
+        margin: theme.spacing(1),
+        fontSize: '3em',
+    },
+    slot3: {
+        padding: theme.spacing(5),
+        margin: theme.spacing(1),
+        fontSize: '3em',
+    },
 
 }));
+
+interface SubscriptionValue<T> {
+    value: { data: T };
+}
 
 const App = () => {
     const classes = useStyles();
@@ -53,8 +73,11 @@ const App = () => {
     const [balls, setBalls] = useState(Array(9).fill(0).map((_, i) => i + 1));
     const [bingoCard, setBingoCard] = useState(makeBingoCard());
     const [numberOfBingo, setNumberOfBingo] = useState(0);
-    const [slotValue, setSlotValue] = useState(9);
     const [score, setScore] = useState(0);
+
+    const [slotValues, setSlotValues] = useState(Array(9).fill(0).map((_, i) => i + 1));
+    const [numberOfSlot, setNumberOfSlot] = useState(1);
+
 
     const [rankers, setRankers] = useState<Ranker[]>([
         { rank: 1, name: '二宮', from: '愛媛大学', bingoNumber: 12, score: 488 },
@@ -87,40 +110,54 @@ const App = () => {
         const list = [];
         for (let i: number = 1; i <= 3; i++) {
             const a: number = ~~(Math.random() * array.length);
-            list.push({'value': array[a], 'isValid': false});
+            list.push({ 'value': array[a], 'isValid': false });
             array.splice(a, 1);
         }
         return list;
     }
 
-    function slot() {
+    function slot(slotIndexes: number[]) {
         const a = ~~(Math.random() * balls.length);
-        setSlotValue(balls[a]);
+        const updatedSlotValues: number[] = [];
+        slotIndexes.forEach(slotIndex => {
+            updatedSlotValues[slotIndex] = balls[a];
+        });
+        setSlotValues(state => ({...state, ...updatedSlotValues}));
     }
 
-    async function galapon() {
+    async function galapon(numberOfSlot: number = 1) {
+        setNumberOfSlot(numberOfSlot);
         setModal(true);
-        const interval = setInterval(() => slot(), 50);
-        await sleep(1000);
-        clearInterval(interval);
-
         const updatedBingoCard = bingoCard.slice();
         const updatedBalls = balls.slice();
+        const slotIndexes = Array(numberOfSlot).fill(0).map((_, i) => i);
+        const drawnBalls: number[] = [];
 
-        const a = ~~(Math.random() * balls.length);
-        const ball = balls[a];
-        setSlotValue(ball);
-        await sleep(1000);
+        const interval = setInterval(() => slot(slotIndexes), 50);
 
-        updatedBalls.splice(a, 1);
-        const foundIndex = updatedBingoCard.findIndex(number => number.value === ball);
-        if (foundIndex !== -1) {
-            updatedBingoCard[foundIndex].isValid = true;
-            setScore(score + ball);
+        for (let i = 0; i < numberOfSlot; i++) {
+            await sleep(500);
+            const a = ~~(Math.random() * updatedBalls.length);
+            const ball = updatedBalls[a];
+            slotIndexes.splice(0, 1);
+            updatedBalls.splice(a, 1);
+            drawnBalls.push(ball);
+            setSlotValues(state => ({...state, [i]: ball}));
+        }
+        clearInterval(interval);
+
+        await sleep(500);
+        for (let i = 0; i < numberOfSlot; i++) {
+            const foundIndex = updatedBingoCard.findIndex(number => number.value === drawnBalls[i]);
+            if (foundIndex !== -1) {
+                await sleep(500);
+                updatedBingoCard[foundIndex].isValid = true;
+                setScore(score + drawnBalls[i]);
+                setBingoCard(updatedBingoCard);
+            }
         }
 
         setBalls(updatedBalls);
-        setBingoCard(updatedBingoCard);
         setNumberOfBingo(checkBingo());
     }
 
@@ -178,18 +215,51 @@ const App = () => {
                 score: post.score
             }
         ));
-        setRankers(state => ([...newRankers, ...state]));
+        // setRankers(state => ([...newRankers, ...state]));
+        setRankers(newRankers);
     };
 
     useEffect(() => {
         getPosts();
         document.addEventListener('scroll', calculateScrollRate);
+        
+        const subscription = API.graphql(graphqlOperation(onCreatePost)).subscribe({
+            next: (msg: SubscriptionValue<OnCreatePostSubscription>) => {
+                if (msg.value.data.onCreatePost) {
+                    getPosts();
+                    console.log('subscription fired');
+                }
+            }
+        });
+        return () => subscription.unsubscribe();
     }, []);
+
+    const Slots = () => {
+        const slots = [];
+        for (let i = 0; i < numberOfSlot; i++) {
+            slots.push(
+                <Avatar className={eval('classes.slot' + numberOfSlot)} key={i}>
+                    <Box component="h1">{slotValues[i]}</Box>
+                </Avatar>
+            );
+        }
+
+        return (
+            <Grid
+                container
+                justify='center'
+                alignItems='center'
+                className={classes.slots}>
+                    
+                {slots}
+            </Grid>
+        );
+    };
 
     return (
         <Container className={classes.root} maxWidth="xs">
-            <LinearProgress variant='determinate' value={progress} className={classes.progressBar} />
             <CssBaseline />
+            <LinearProgress variant='determinate' value={progress} className={classes.progressBar} />
             <Fab
                 className={classes.fab}
                 onClick={() => setDrawer(true)}
@@ -214,7 +284,7 @@ const App = () => {
                 <li>numberOfBingo: {numberOfBingo}</li>
                 <li>score: {score}</li>
             </ul>
-            
+
             <Modal
                 open={modal}
                 disableAutoFocus
@@ -222,10 +292,7 @@ const App = () => {
                 onClose={() => setModal(false)}
             >
                 <Grid container direction="column" alignItems="center">
-                    <Box height="5vh"></Box>
-                    <Avatar className={classes.slot}>
-                        <Box component="h1" fontWeight="bold" fontSize="5em">{slotValue}</Box>
-                    </Avatar>
+                    <Slots />
                     <Bingo bingoCard={bingoCard} />
                 </Grid>
             </Modal>

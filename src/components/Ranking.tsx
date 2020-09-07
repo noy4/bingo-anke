@@ -11,13 +11,12 @@ const useStyles = makeStyles((theme) => ({
         textAlign: "center",
     },
     ranking: {
+        width: '95%',
         overflow: "auto",
         flexGrow: 1,
-        // marginBottom: theme.spacing(2),
     },
     rankerName: {
         width: '100%',
-        // paddingRight: theme.spacing(4),
     },
 }));
 

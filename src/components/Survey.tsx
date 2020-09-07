@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Galapon from './Galapon';
+import Galapon, { GalaponProps } from './Galapon';
 import { createPost } from '../graphql/mutations';
 import { onCreatePost } from '../graphql/subscriptions';
 import API, { graphqlOperation } from '@aws-amplify/api';
@@ -41,15 +41,14 @@ interface SubscriptionValue<T> {
     value: { data: T };
 }
 
-interface SurveyProps {
-    galapon: () => void,
+interface SurveyProps extends GalaponProps {
     numberOfBingo: number,
     score: number,
 }
 
 const Survey = (props: SurveyProps) => {
     const classes = useStyles();
-    const [values, setvalues] = useState<Ivalues>({
+    const [values, setValues] = useState<Ivalues>({
         // playerName: '',
         // playerSex: '',
     });
@@ -60,7 +59,7 @@ const Survey = (props: SurveyProps) => {
             const value = target.type === 'checkbox' ? target.checked : target.value;
             const name = target.name;
             console.log(name);
-            setvalues(state => ({ ...state, [name]: value }));
+            setValues(state => ({ ...state, [name]: value }));
         }
     }
 
@@ -85,7 +84,7 @@ const Survey = (props: SurveyProps) => {
             next: (msg: SubscriptionValue<OnCreatePostSubscription>) => {
                 if (msg.value.data.onCreatePost) {
                     console.log('subscription fired');
-                    setvalues({});
+                    setValues({});
                 }
             }
         });
@@ -180,7 +179,7 @@ const Survey = (props: SurveyProps) => {
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="subtitle1">
-                        楽しかったですか。
+                        悲しいですか。
                     </Typography>
                     <Grid container justify='space-between'>
                         <Typography variant='subtitle2'>そう思わない</Typography>
@@ -202,13 +201,13 @@ const Survey = (props: SurveyProps) => {
                         </RadioGroup>
                     </Grid>
                     <Galapon
-                        galapon={props.galapon}
+                        galapon={() => props.galapon(2)}
                         galable={Boolean(values.fivePoint)}
                     />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="subtitle1">
-                        どの辺がどういうふうにどの程度楽しかったですか。
+                        どの辺がどういうふうにどの程度悲しいですか。
                     </Typography>
                     <TextField
                         name="textarea"
@@ -221,7 +220,7 @@ const Survey = (props: SurveyProps) => {
                     />
                     <Galapon
                         galable={Boolean(values.textarea?.trim())}
-                        galapon={props.galapon} />
+                        galapon={() => props.galapon(2)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="subtitle1">
@@ -238,8 +237,7 @@ const Survey = (props: SurveyProps) => {
                         <FormControlLabel control={<Checkbox name='twitter' checked={values.twitter || false} />} label="Twitter" />
                     </FormGroup>
                     <Galapon
-                        galapon={props.galapon}
-                        galable={Boolean(values.checkbox)}
+                        galapon={() => props.galapon(3)}
                     />
                 </Paper>
 

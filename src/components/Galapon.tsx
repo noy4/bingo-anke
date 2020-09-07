@@ -6,8 +6,8 @@ import {
 import Adjust from '@material-ui/icons/Adjust';
 import CheckCircleOutlineRounded from '@material-ui/icons/CheckCircleOutlineRounded';
 
-interface GalaponProps {
-    galapon: () => void,
+export interface GalaponProps {
+    galapon: (num?: number) => void,
     galable?: boolean,
 }
 
@@ -23,7 +23,7 @@ export default function Galapon(props: GalaponProps) {
                 disableElevation
                 onClick={() => {
                     props.galapon();
-                    // setDisabled(true);
+                    setDisabled(true);
                 }}
                 disabled={!props.galable || disabled}
             >
