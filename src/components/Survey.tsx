@@ -5,10 +5,13 @@ import { onCreatePost } from '../graphql/subscriptions';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { CreatePostInput, OnCreatePostSubscription } from '../API';//eslint-disable-line
 import { makeStyles } from "@material-ui/core/styles";
+import clsx from 'clsx';
 import {
     Paper, Typography, TextField, RadioGroup, Radio,
     FormControlLabel, Grid, Button, FormGroup, Checkbox,
+    CircularProgress,
 } from '@material-ui/core';
+import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     titlePaper: {
@@ -28,7 +31,17 @@ const useStyles = makeStyles((theme) => ({
     },
     rowRadio: {
         margin: '0',
-    }
+    },
+    buttonWrapper: {
+        position: 'relative',
+    },
+    bottunProgress: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 }));
 
 interface Ivalues {
@@ -44,6 +57,7 @@ interface SubscriptionValue<T> {
 interface SurveyProps extends GalaponProps {
     numberOfBingo: number,
     score: number,
+    openDialog: () => void,
 }
 
 const Survey = (props: SurveyProps) => {
@@ -52,6 +66,8 @@ const Survey = (props: SurveyProps) => {
         // playerName: '',
         // playerSex: '',
     });
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const target = event.target;
@@ -64,6 +80,7 @@ const Survey = (props: SurveyProps) => {
     }
 
     const onPost = async () => {
+        setLoading(true);
         const { playerRankingName, playerFrom, ...contents } = values;
         const res = await API.graphql(graphqlOperation(createPost, {
             input: {
@@ -84,11 +101,16 @@ const Survey = (props: SurveyProps) => {
             next: (msg: SubscriptionValue<OnCreatePostSubscription>) => {
                 if (msg.value.data.onCreatePost) {
                     console.log('subscription fired');
-                    setValues({});
+                    setLoading(false);
+                    setSuccess(true);
+                    props.openDialog();
                 }
             }
         });
-        return () => subscription.unsubscribe();
+
+        return () => {
+            subscription.unsubscribe();
+        };
     }, []);
 
     const title = "あなたについてのアンケート";
@@ -242,9 +264,18 @@ const Survey = (props: SurveyProps) => {
                 </Paper>
 
                 <Grid container justify="flex-end">
-                    <Button type="submit" variant="contained" color="primary">
-                        送信
-                    </Button>
+                    <div className={classes.buttonWrapper}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            disabled={loading || success}
+                            className={clsx(success && classes.buttonSuccess)}
+                            >
+                            送信
+                        </Button>
+                        {loading && <CircularProgress size={24} className={classes.bottunProgress} />}
+                    </div>
                 </Grid>
             </form>
         </>

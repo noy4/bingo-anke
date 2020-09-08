@@ -11,19 +11,22 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
     Container, CssBaseline, Fab, Drawer,
     Grid, Avatar, Box, Modal, LinearProgress,
+    Dialog, DialogTitle, DialogContent,
+    DialogContentText, DialogActions, Button,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import Amplify from '@aws-amplify/core';
 import PubSub from '@aws-amplify/pubsub';
 import awsmobile from './aws-exports';
+import { pink } from '@material-ui/core/colors';
 
 Amplify.configure(awsmobile);
 PubSub.configure(awsmobile);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        background: "#bbdefb",
+        background: pink[100],
         padding: theme.spacing(2),
     },
     progressBar: {
@@ -52,9 +55,9 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '3em',
     },
     slot3: {
-        padding: theme.spacing(5),
+        padding: theme.spacing(4.5),
         margin: theme.spacing(1),
-        fontSize: '3em',
+        fontSize: '2em',
     },
 
 }));
@@ -69,6 +72,8 @@ const App = () => {
     const [progress, setProgress] = useState(0);
     const [drawer, setDrawer] = useState(false);
     const [modal, setModal] = useState(false);
+    const [dialog, setDialog] = useState(false);
+    
 
     const [balls, setBalls] = useState(Array(9).fill(0).map((_, i) => i + 1));
     const [bingoCard, setBingoCard] = useState(makeBingoCard());
@@ -147,18 +152,20 @@ const App = () => {
         clearInterval(interval);
 
         await sleep(500);
+        let updatedScore = score;
         for (let i = 0; i < numberOfSlot; i++) {
             const foundIndex = updatedBingoCard.findIndex(number => number.value === drawnBalls[i]);
             if (foundIndex !== -1) {
                 await sleep(500);
                 updatedBingoCard[foundIndex].isValid = true;
-                setScore(score + drawnBalls[i]);
+                updatedScore += drawnBalls[i];
                 setBingoCard(updatedBingoCard);
             }
         }
-
+        
         setBalls(updatedBalls);
         setNumberOfBingo(checkBingo());
+        setScore(updatedScore);
     }
 
     function sleep(waitSec: number) {
@@ -256,6 +263,10 @@ const App = () => {
         );
     };
 
+    function handleOpenDialog() {
+        setDialog(true);
+    }
+
     return (
         <Container className={classes.root} maxWidth="xs">
             <CssBaseline />
@@ -279,6 +290,7 @@ const App = () => {
                 galapon={galapon}
                 numberOfBingo={numberOfBingo}
                 score={score}
+                openDialog={handleOpenDialog}
             />
             <ul>
                 <li>numberOfBingo: {numberOfBingo}</li>
@@ -291,11 +303,34 @@ const App = () => {
                 disableEnforceFocus
                 onClose={() => setModal(false)}
             >
-                <Grid container direction="column" alignItems="center">
+                <Box width={280} mx='auto'>
                     <Slots />
                     <Bingo bingoCard={bingoCard} />
-                </Grid>
+                </Box>
             </Modal>
+
+            <Dialog
+                open={dialog}
+                aria-labelledby='submit-dialog-title'
+                aria-describedby='submit-dialog-description'
+                onClose={() => setDialog(false)}
+                >
+                <DialogTitle id='submit-dialog-title'>回答を送信しました。</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id='submit-dialog-description'>
+                        ご協力ありがとうございます。( ᐛ)
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => {
+                            setDialog(false);
+                            setDrawer(true);}} 
+                        color='primary'>
+                        ランキングを見る
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
