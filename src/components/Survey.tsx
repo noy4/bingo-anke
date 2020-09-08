@@ -5,7 +5,6 @@ import { onCreatePost } from '../graphql/subscriptions';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { CreatePostInput, OnCreatePostSubscription } from '../API';//eslint-disable-line
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from 'clsx';
 import {
     Paper, Typography, TextField, RadioGroup, Radio,
     FormControlLabel, Grid, Button, FormGroup, Checkbox,
@@ -270,7 +269,6 @@ const Survey = (props: SurveyProps) => {
                             variant="contained"
                             color="primary"
                             disabled={loading || success}
-                            className={clsx(success && classes.buttonSuccess)}
                             >
                             送信
                         </Button>
