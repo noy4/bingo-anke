@@ -10,7 +10,6 @@ import {
     FormControlLabel, Grid, Button, FormGroup, Checkbox,
     CircularProgress,
 } from '@material-ui/core';
-import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     titlePaper: {
@@ -258,7 +257,7 @@ const Survey = (props: SurveyProps) => {
                         <FormControlLabel control={<Checkbox name='twitter' checked={values.twitter || false} />} label="Twitter" />
                     </FormGroup>
                     <Galapon
-                        galapon={() => props.galapon(3)}
+                        galapon={() => props.galapon(4)}
                     />
                 </Paper>
 

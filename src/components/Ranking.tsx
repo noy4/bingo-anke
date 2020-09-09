@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Grid, Typography, List, ListItem, ListItemAvatar,
@@ -15,12 +16,16 @@ const useStyles = makeStyles((theme) => ({
         overflow: "auto",
         flexGrow: 1,
     },
+    listItem: {
+        backgroundColor: 'grey',
+    },
     rankerName: {
         width: '100%',
     },
 }));
 
 export interface Ranker {
+    iam?: boolean,
     rank: number,
     name: string,
     from: string,
@@ -40,7 +45,7 @@ const Ranking: React.FC<RankingProps> = (props) => {
             <Typography variant="h6" className={classes.rankingTitle}>ランキング</Typography>
             <List className={classes.ranking}>
                 {props.rankers.map((ranker, index) => (
-                    <ListItem key={index}>
+                    <ListItem key={index} className={clsx(ranker.iam && classes.listItem)}>
                         <Grid container justify="center">
                             <ListItemAvatar>
                                 <Avatar>{index + 1}</Avatar>

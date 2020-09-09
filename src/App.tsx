@@ -12,9 +12,11 @@ import {
     Container, CssBaseline, Fab, Drawer,
     Grid, Avatar, Box, Modal, LinearProgress,
     Dialog, DialogTitle, DialogContent,
-    DialogContentText, DialogActions, Button,
+    DialogContentText, DialogActions, Button, Snackbar,
 } from '@material-ui/core';
+import MuiAlert, {AlertProps} from '@material-ui/lab/Alert';
 import MenuIcon from '@material-ui/icons/Menu';
+import TrendingUp from '@material-ui/icons/TrendingUp';
 
 import Amplify from '@aws-amplify/core';
 import PubSub from '@aws-amplify/pubsub';
@@ -40,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
         position: "fixed",
         bottom: 4,
         zIndex: 10,
+    },
+    snackBar: {
+        width: '100%',
     },
     slots: {
         height: '20vh',
@@ -73,6 +78,7 @@ const App = () => {
     const [drawer, setDrawer] = useState(false);
     const [modal, setModal] = useState(false);
     const [dialog, setDialog] = useState(false);
+    const [snackBar, setSnackBar] = useState(true);
     
 
     const [balls, setBalls] = useState(Array(9).fill(0).map((_, i) => i + 1));
@@ -82,7 +88,8 @@ const App = () => {
 
     const [slotValues, setSlotValues] = useState(Array(9).fill(0).map((_, i) => i + 1));
     const [numberOfSlot, setNumberOfSlot] = useState(1);
-
+    const [rankInfo, setRankInfo] = useState({'prev': 0, 'current': 0});
+    
 
     const [rankers, setRankers] = useState<Ranker[]>([
         { rank: 1, name: '二宮', from: '愛媛大学', bingoNumber: 12, score: 488 },
@@ -133,7 +140,7 @@ const App = () => {
     async function galapon(numberOfSlot: number = 1) {
         setNumberOfSlot(numberOfSlot);
         setModal(true);
-        const updatedBingoCard = bingoCard.slice();
+        // const updatedBingoCard = bingoCard.slice();
         const updatedBalls = balls.slice();
         const slotIndexes = Array(numberOfSlot).fill(0).map((_, i) => i);
         const drawnBalls: number[] = [];
@@ -154,24 +161,47 @@ const App = () => {
         await sleep(500);
         let updatedScore = score;
         for (let i = 0; i < numberOfSlot; i++) {
-            const foundIndex = updatedBingoCard.findIndex(number => number.value === drawnBalls[i]);
-            if (foundIndex !== -1) {
+            const square = bingoCard.find(square => square.value === drawnBalls[i]);
+            if (square !== undefined) {
                 await sleep(500);
-                updatedBingoCard[foundIndex].isValid = true;
-                updatedScore += drawnBalls[i];
+                square.isValid = true;
+                const updatedBingoCard = bingoCard.slice();
                 setBingoCard(updatedBingoCard);
+                updatedScore += drawnBalls[i];
             }
         }
+
+        const updatedNumberOfBingo = checkBingo();
         
         setBalls(updatedBalls);
-        setNumberOfBingo(checkBingo());
+        setNumberOfBingo(updatedNumberOfBingo);
         setScore(updatedScore);
+        handleRankers(updatedNumberOfBingo, updatedScore);
     }
 
     function sleep(waitSec: number) {
         return new Promise(function (resolve) {
             setTimeout(function () { resolve(); }, waitSec);
         });
+    }
+
+    function handleRankers(numberOfBingo: number, score: number) {
+        const newRankers = rankers.slice();
+        const prevIndex = newRankers.findIndex(ranker => ranker.iam);
+        const newRanker = newRankers[prevIndex];
+        if (newRanker !== undefined) {
+            newRanker.bingoNumber = numberOfBingo;
+            newRanker.score = score;
+        }
+
+        newRankers.sort((a, b) => b.score - a.score);
+        newRankers.sort((a, b) => b.bingoNumber - a.bingoNumber);
+        setRankers(newRankers);
+
+        const currentIndex = newRankers.findIndex(ranker => ranker.iam);
+        if (prevIndex !== currentIndex){
+            setRankInfo({'prev': prevIndex + 1, 'current': currentIndex + 1});
+        }
     }
 
     function checkBingo() {
@@ -206,11 +236,11 @@ const App = () => {
         setProgress(scrollRate);
     }
 
-    const getPosts = async (nextToken = null) => {
+    const getPosts = async (init = false, nextToken = null) => {
         const res = await API.graphql(graphqlOperation(listPostsSortedByScore, {
             type: "post",
             sortDirection: 'DESC',
-            limit: 20,
+            limit: 100,
             nextToken: nextToken,
         }));
         const newRankers = res.data.listPostsSortedByScore.items.map((post: CreatePostInput) => (
@@ -222,23 +252,33 @@ const App = () => {
                 score: post.score
             }
         ));
+        if (init) {
+            newRankers.push({
+                iam: true,
+                rank: 0,
+                name: 'あなた',
+                from: '',
+                bingoNumber: 0,
+                score: 0
+            });
+        }
         // setRankers(state => ([...newRankers, ...state]));
         setRankers(newRankers);
     };
 
     useEffect(() => {
-        getPosts();
+        getPosts(true);
         document.addEventListener('scroll', calculateScrollRate);
         
-        const subscription = API.graphql(graphqlOperation(onCreatePost)).subscribe({
-            next: (msg: SubscriptionValue<OnCreatePostSubscription>) => {
-                if (msg.value.data.onCreatePost) {
-                    getPosts();
-                    console.log('subscription fired');
-                }
-            }
-        });
-        return () => subscription.unsubscribe();
+        // const subscription = API.graphql(graphqlOperation(onCreatePost)).subscribe({
+        //     next: (msg: SubscriptionValue<OnCreatePostSubscription>) => {
+        //         if (msg.value.data.onCreatePost) {
+        //             getPosts();
+        //             console.log('subscription fired');
+        //         }
+        //     }
+        // });
+        // return () => subscription.unsubscribe();
     }, []);
 
     const Slots = () => {
@@ -263,8 +303,19 @@ const App = () => {
         );
     };
 
+    const Alert = (props: AlertProps) => {
+        return <MuiAlert elevation={6} variant='filled' {...props} />;
+    };
+
     function handleOpenDialog() {
         setDialog(true);
+    }
+
+    function handleCloseModal() {
+        setModal(false);
+        if (rankInfo.prev !== rankInfo.current) {
+            setSnackBar(true);
+        }
     }
 
     return (
@@ -286,6 +337,24 @@ const App = () => {
                 <Menu rankers={rankers} bingoCard={bingoCard} />
             </Drawer>
 
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center'
+                }}
+                // autoHideDuration={3000}
+                onClose={() => setSnackBar(false)}
+                open={snackBar}
+                // message={
+                //     `${rankInfo.prev - rankInfo.current}人抜き（現在${rankInfo.current}位）`
+                // }
+            >
+                <Alert severity='info' icon={<TrendingUp />}
+                    className={classes.snackBar}>
+                    {rankInfo.prev - rankInfo.current}人抜き（現在{rankInfo.current}位）
+                </Alert>
+            </Snackbar>
+
             <Survey
                 galapon={galapon}
                 numberOfBingo={numberOfBingo}
@@ -301,7 +370,7 @@ const App = () => {
                 open={modal}
                 disableAutoFocus
                 disableEnforceFocus
-                onClose={() => setModal(false)}
+                onClose={handleCloseModal}
             >
                 <Box width={280} mx='auto'>
                     <Slots />
