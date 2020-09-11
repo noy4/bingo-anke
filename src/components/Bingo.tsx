@@ -1,9 +1,14 @@
 import React from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
-import {Avatar, Grid, Box} from '@material-ui/core';
+import {Avatar, Grid, Box, Paper} from '@material-ui/core';
+import { pink, blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
+    paper: {
+        backgroundColor: blue[200],
+        padding: theme.spacing(1),
+    },
     avatar: {
         padding: theme.spacing(3),
         fontSize: '2em',
@@ -44,7 +49,8 @@ const Bingo: React.FC<BingoProps> = (props) => {
     };
 
     return (
-        <Box bgcolor="black" p={1} borderRadius='5px'>
+        // bgcolor="black" p={1} borderRadius='5px'
+        <Paper className={classes.paper} elevation={3}>
             <Grid container>
                 <Grid item container direction='column' xs={4}>
                     {renderSquare(0)}
@@ -62,7 +68,7 @@ const Bingo: React.FC<BingoProps> = (props) => {
                     {renderSquare(8)}
                 </Grid>
             </Grid>
-        </Box>
+        </Paper>
     );
 };
 

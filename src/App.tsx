@@ -75,7 +75,7 @@ const App = () => {
     const classes = useStyles();
 
     const [progress, setProgress] = useState(0);
-    const [drawer, setDrawer] = useState(false);
+    const [drawer, setDrawer] = useState(true);
     const [modal, setModal] = useState(false);
     const [dialog, setDialog] = useState(false);
     const [snackBar, setSnackBar] = useState(true);
