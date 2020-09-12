@@ -53,19 +53,23 @@ const useStyles = makeStyles((theme) => ({
     },
     slot1: {
         padding: theme.spacing(8),
-        fontSize: '4em',
+        fontSize: '3.5em',
     },
     slot2: {
         padding: theme.spacing(6),
         margin: theme.spacing(1),
-        fontSize: '3em',
+        fontSize: '2.5em',
     },
     slot3: {
         padding: theme.spacing(4.5),
         margin: theme.spacing(1),
-        fontSize: '2em',
+        fontSize: '1.8em',
     },
-
+    slot4: {
+        padding: theme.spacing(3.5),
+        margin: theme.spacing(0.5),
+        fontSize: '1.4em',
+    },
 }));
 
 interface SubscriptionValue<T> {
@@ -84,12 +88,13 @@ const App = () => {
     
     
 
-    const [balls, setBalls] = useState(Array(9).fill(0).map((_, i) => i + 1));
+    const [balls, setBalls] = useState(Array(75).fill(0).map((_, i) => i + 1));
     const [bingoCard, setBingoCard] = useState(makeBingoCard());
     const [bingoInfo, setBingoInfo] = useState({'prev': 0, 'current': 0});
     const [score, setScore] = useState(0);
 
-    const [slotValues, setSlotValues] = useState(Array(9).fill(0).map((_, i) => i + 1));
+    const [slotValues, setSlotValues] = useState(Array(9).fill(28));
+    // const [slotValues, setSlotValues] = useState(Array(9).fill(0).map((_, i) => i + 1));
     const [numberOfSlot, setNumberOfSlot] = useState(1);
     const [rankInfo, setRankInfo] = useState({'prev': 0, 'current': 0});
     
@@ -110,10 +115,12 @@ const App = () => {
 
     function makeBingoCard() {
         const col_1 = makeColumn(1);
-        const col_2 = makeColumn(4);
-        const col_3 = makeColumn(7);
-        const list = [...col_1, ...col_2, ...col_3];
-        list[4] = {
+        const col_2 = makeColumn(16);
+        const col_3 = makeColumn(31);
+        const col_4 = makeColumn(46);
+        const col_5 = makeColumn(61);
+        const list = [...col_1, ...col_2, ...col_3, ...col_4, ...col_5];
+        list[12] = {
             'value': 0,
             'isValid': true,
         };
@@ -121,9 +128,9 @@ const App = () => {
         return list;
     }
     function makeColumn(base: number) {
-        const array = Array(3).fill(0).map((_, i) => i + base);
+        const array = Array(15).fill(0).map((_, i) => i + base);
         const list = [];
-        for (let i: number = 1; i <= 3; i++) {
+        for (let i: number = 1; i <= 5; i++) {
             const a: number = ~~(Math.random() * array.length);
             list.push({ 'value': array[a], 'isValid': false });
             array.splice(a, 1);
@@ -150,7 +157,7 @@ const App = () => {
         const interval = setInterval(() => slot(slotIndexes), 50);
 
         for (let i = 0; i < numberOfSlot; i++) {
-            await sleep(500);
+            await sleep(200);
             const a = ~~(Math.random() * updatedBalls.length);
             const ball = updatedBalls[a];
             slotIndexes.splice(0, 1);
@@ -165,7 +172,7 @@ const App = () => {
         for (let i = 0; i < numberOfSlot; i++) {
             const square = bingoCard.find(square => square.value === drawnBalls[i]);
             if (square !== undefined) {
-                await sleep(500);
+                await sleep(200);
                 square.isValid = true;
                 const updatedBingoCard = bingoCard.slice();
                 setBingoCard(updatedBingoCard);
@@ -207,9 +214,7 @@ const App = () => {
         setRankers(newRankers);
 
         const currentIndex = newRankers.findIndex(ranker => ranker.iam);
-        if (prevIndex !== currentIndex){
-            setRankInfo({'prev': prevIndex + 1, 'current': currentIndex + 1});
-        }
+        setRankInfo({'prev': prevIndex + 1, 'current': currentIndex + 1});
     }
 
     function checkBingo() {
@@ -391,7 +396,7 @@ const App = () => {
                 disableEnforceFocus
                 onClose={handleCloseModal}
             >
-                <Box width={280} mx='auto'>
+                <Box width={272} mx='auto'>
                     <Slots />
                     <Bingo bingoCard={bingoCard} />
                 </Box>

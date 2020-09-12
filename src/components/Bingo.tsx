@@ -11,14 +11,15 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar: {
         padding: theme.spacing(3),
-        fontSize: '2em',
+        fontSize: '1.5em',
         fontWeight: 'bold',
     },
     avatarColor: {
-        backgroundColor: '#ccc',
+        backgroundColor: 'white',
+        color: blue[200],
     },
     validAvatarColor: {
-        backgroundColor: 'red',
+        backgroundColor: blue[300],
     }
 }));
 
@@ -34,7 +35,7 @@ const Bingo: React.FC<BingoProps> = (props) => {
 
     const renderSquare = (i: number) => {
         return (
-            <Box bgcolor='white' p={2} m={0.5} borderRadius='10px'>
+            <Box bgcolor='white' p={0} m={0.2} borderRadius='10px'>
                 <Avatar
                     className={
                         clsx(classes.avatar,
@@ -49,23 +50,42 @@ const Bingo: React.FC<BingoProps> = (props) => {
     };
 
     return (
-        // bgcolor="black" p={1} borderRadius='5px'
         <Paper className={classes.paper} elevation={3}>
             <Grid container>
-                <Grid item container direction='column' xs={4}>
+                <Grid item container direction='column' xs>
                     {renderSquare(0)}
                     {renderSquare(1)}
                     {renderSquare(2)}
-                </Grid>
-                <Grid item container direction='column' xs={4}>
                     {renderSquare(3)}
                     {renderSquare(4)}
-                    {renderSquare(5)}
                 </Grid>
-                <Grid item container direction='column' xs={4}>
+                <Grid item container direction='column' xs>
+                    {renderSquare(5)}
                     {renderSquare(6)}
                     {renderSquare(7)}
                     {renderSquare(8)}
+                    {renderSquare(9)}
+                </Grid>
+                <Grid item container direction='column' xs>
+                    {renderSquare(10)}
+                    {renderSquare(11)}
+                    {renderSquare(12)}
+                    {renderSquare(13)}
+                    {renderSquare(14)}
+                </Grid>
+                <Grid item container direction='column' xs>
+                    {renderSquare(15)}
+                    {renderSquare(16)}
+                    {renderSquare(17)}
+                    {renderSquare(18)}
+                    {renderSquare(19)}
+                </Grid>
+                <Grid item container direction='column' xs>
+                    {renderSquare(20)}
+                    {renderSquare(21)}
+                    {renderSquare(22)}
+                    {renderSquare(23)}
+                    {renderSquare(24)}
                 </Grid>
             </Grid>
         </Paper>

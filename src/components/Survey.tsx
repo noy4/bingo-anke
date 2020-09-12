@@ -145,7 +145,7 @@ const Survey = (props: SurveyProps) => {
                     />
                     <Galapon
                         galable={Boolean(values.playerFirstName?.trim() && values.playerFamilyName?.trim())}
-                        galapon={props.galapon} />
+                        galapon={() => props.galapon(4)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="h6">
@@ -161,7 +161,7 @@ const Survey = (props: SurveyProps) => {
                     />
                     <Galapon
                         galable={Boolean(values.playerFamilyName?.trim() || values.playerRankingName?.trim())}
-                        galapon={props.galapon} />
+                        galapon={() => props.galapon(4)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="h6">
@@ -177,7 +177,7 @@ const Survey = (props: SurveyProps) => {
                     />
                     <Galapon
                         galable={Boolean(values.playerFrom?.trim())}
-                        galapon={props.galapon} />
+                        galapon={() => props.galapon(4)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="h6">
@@ -193,7 +193,7 @@ const Survey = (props: SurveyProps) => {
                         <FormControlLabel value="female" control={<Radio />} label="女性" />
                     </RadioGroup>
                     <Galapon
-                        galapon={props.galapon}
+                        galapon={() => props.galapon(4)}
                         galable={Boolean(values.playerSex)}
                     />
                 </Paper>
@@ -221,7 +221,7 @@ const Survey = (props: SurveyProps) => {
                         </RadioGroup>
                     </Grid>
                     <Galapon
-                        galapon={() => props.galapon(2)}
+                        galapon={() => props.galapon(4)}
                         galable={Boolean(values.fivePoint)}
                     />
                 </Paper>
@@ -240,7 +240,7 @@ const Survey = (props: SurveyProps) => {
                     />
                     <Galapon
                         galable={Boolean(values.textarea?.trim())}
-                        galapon={() => props.galapon(2)} />
+                        galapon={() => props.galapon(3)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="subtitle1">
