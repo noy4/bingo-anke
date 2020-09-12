@@ -3,6 +3,7 @@ import Survey from './components/Survey';
 import Menu from './components/Menu';
 import { Ranker } from './components/Ranking';//eslint-disable-line 
 import Bingo from './components/Bingo';
+import Slots from './components/Slots';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { CreatePostInput, OnCreatePostSubscription } from './API';//eslint-disable-line
 import { listPostsSortedByScore } from './graphql/queries';
@@ -10,7 +11,7 @@ import { onCreatePost } from './graphql/subscriptions';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Container, CssBaseline, Fab, Drawer,
-    Grid, Avatar, Box, Modal, LinearProgress,
+    Box, Modal, LinearProgress,
     Dialog, DialogTitle, DialogContent,
     DialogContentText, DialogActions, Button, Snackbar,
 } from '@material-ui/core';
@@ -47,29 +48,6 @@ const useStyles = makeStyles((theme) => ({
     snackBar: {
         width: '100%',
     },
-    slots: {
-        height: '20vh',
-        margin: '10vh 0 5vh',
-    },
-    slot1: {
-        padding: theme.spacing(8),
-        fontSize: '3.5em',
-    },
-    slot2: {
-        padding: theme.spacing(6),
-        margin: theme.spacing(1),
-        fontSize: '2.5em',
-    },
-    slot3: {
-        padding: theme.spacing(4.5),
-        margin: theme.spacing(1),
-        fontSize: '1.8em',
-    },
-    slot4: {
-        padding: theme.spacing(3.5),
-        margin: theme.spacing(0.5),
-        fontSize: '1.4em',
-    },
 }));
 
 interface SubscriptionValue<T> {
@@ -79,24 +57,21 @@ interface SubscriptionValue<T> {
 const App = () => {
     const classes = useStyles();
 
-    const [progress, setProgress] = useState(0);
-    const [drawer, setDrawer] = useState(true);
-    const [modal, setModal] = useState(false);
-    const [dialog, setDialog] = useState(false);
-    const [rankNotice, setRankNotice] = useState(true);
-    const [bingoNotice, setBingoNotice] = useState(false);
+    const [progress, setProgress] = useState(0);    //プログレスバー割合
+    const [drawer, setDrawer] = useState(true);     //サイドメニューフラグ
+    const [modal, setModal] = useState(false);      //モーダルフラグ
+    const [dialog, setDialog] = useState(false);    //送信完了ダイアログフラグ
+    const [rankNotice, setRankNotice] = useState(true);     //ランク上昇通知フラグ
+    const [bingoNotice, setBingoNotice] = useState(false);  //ビンゴ通知フラグ
     
-    
+    const [balls, setBalls] = useState(Array(75).fill(0).map((_, i) => i + 1)); //ガラポン内の玉[]
+    const [bingoCard, setBingoCard] = useState(makeBingoCard());                //ビンゴカード[]
+    const [bingoInfo, setBingoInfo] = useState({'prev': 0, 'current': 0});      //ビンゴ状況（更新前：更新後）（現在prev未使用）
+    const [score, setScore] = useState(0);                                      //スコア
 
-    const [balls, setBalls] = useState(Array(75).fill(0).map((_, i) => i + 1));
-    const [bingoCard, setBingoCard] = useState(makeBingoCard());
-    const [bingoInfo, setBingoInfo] = useState({'prev': 0, 'current': 0});
-    const [score, setScore] = useState(0);
-
-    const [slotValues, setSlotValues] = useState(Array(9).fill(28));
-    // const [slotValues, setSlotValues] = useState(Array(9).fill(0).map((_, i) => i + 1));
-    const [numberOfSlot, setNumberOfSlot] = useState(1);
-    const [rankInfo, setRankInfo] = useState({'prev': 0, 'current': 0});
+    const [slotValues, setSlotValues] = useState(Array(9).fill(0));         //スロットに表示する番号[]
+    const [numberOfSlot, setNumberOfSlot] = useState(1);                    //スロットの数
+    const [rankInfo, setRankInfo] = useState({'prev': 0, 'current': 0});    //ランク状況（更新前：更新後）
     
 
     const [rankers, setRankers] = useState<Ranker[]>([
@@ -220,18 +195,27 @@ const App = () => {
     function checkBingo() {
         let counter = 0;
         const lines = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
+            [0, 1, 2, 3, 4],
+            [5, 6, 7, 8, 9],
+            [10, 11, 12, 13, 14],
+            [15, 16, 17, 18, 19],
+            [20, 21, 22, 23, 24],
+            [0, 5, 10, 15, 20],
+            [1, 6, 11, 16, 21],
+            [2, 7, 12, 17, 22],
+            [3, 8, 13, 18, 23],
+            [4, 9, 14, 19, 24],
+            [0, 6, 12, 18, 24],
+            [4, 8, 12, 16, 20]
         ];
         for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (bingoCard[a].isValid && bingoCard[b].isValid && bingoCard[c].isValid) {
+            const [a, b, c, d, e] = lines[i];
+            if (bingoCard[a].isValid
+                && bingoCard[b].isValid
+                && bingoCard[c].isValid
+                && bingoCard[d].isValid
+                && bingoCard[e].isValid)
+            {
                 counter++;
             }
         }
@@ -293,28 +277,6 @@ const App = () => {
         // });
         // return () => subscription.unsubscribe();
     }, []);
-
-    const Slots = () => {
-        const slots = [];
-        for (let i = 0; i < numberOfSlot; i++) {
-            slots.push(
-                <Avatar className={eval('classes.slot' + numberOfSlot)} key={i}>
-                    <Box component="h1">{slotValues[i]}</Box>
-                </Avatar>
-            );
-        }
-
-        return (
-            <Grid
-                container
-                justify='center'
-                alignItems='center'
-                className={classes.slots}>
-                    
-                {slots}
-            </Grid>
-        );
-    };
 
     const Alert = (props: AlertProps) => {
         return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -385,10 +347,6 @@ const App = () => {
                 score={score}
                 openDialog={handleOpenDialog}
             />
-            {/* <ul>
-                <li>numberOfBingo: {bingoInfo.current}</li>
-                <li>score: {score}</li>
-            </ul> */}
 
             <Modal
                 open={modal}
@@ -397,7 +355,7 @@ const App = () => {
                 onClose={handleCloseModal}
             >
                 <Box width={272} mx='auto'>
-                    <Slots />
+                    <Slots numberOfSlot={numberOfSlot} slotValues={slotValues} />
                     <Bingo bingoCard={bingoCard} />
                 </Box>
             </Modal>

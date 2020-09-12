@@ -91,25 +91,13 @@ const Survey = (props: SurveyProps) => {
                 timestamp: Date.now(),
             }
         }));
-        console.log(res);
+        if (res.data.createPost) {
+            console.log(res);
+            setLoading(false);
+            setSuccess(true);
+            props.openDialog();
+        }
     };
-
-    useEffect(() => {
-        const subscription = API.graphql(graphqlOperation(onCreatePost)).subscribe({
-            next: (msg: SubscriptionValue<OnCreatePostSubscription>) => {
-                if (msg.value.data.onCreatePost) {
-                    console.log('subscription fired');
-                    setLoading(false);
-                    setSuccess(true);
-                    props.openDialog();
-                }
-            }
-        });
-
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, []);
 
     const title = "あなたについてのアンケート";
 

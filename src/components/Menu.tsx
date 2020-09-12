@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme) => ({
     drawerGrid: {
         height: "100%",
     },
-
 }));
 
 interface MenuProps extends RankingProps, BingoProps {}
