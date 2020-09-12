@@ -10,7 +10,7 @@ import { blue, pink } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     rankingTitle: {
-        paddingTop: theme.spacing(4),
+        paddingTop: theme.spacing(1),
         textAlign: "center",
     },
     ranking: {
