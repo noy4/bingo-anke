@@ -17,6 +17,7 @@ import {
 import MuiAlert, {AlertProps} from '@material-ui/lab/Alert';
 import MenuIcon from '@material-ui/icons/Menu';
 import TrendingUp from '@material-ui/icons/TrendingUp';
+import Flare from '@material-ui/icons/Flare';
 
 import Amplify from '@aws-amplify/core';
 import PubSub from '@aws-amplify/pubsub';
@@ -29,7 +30,7 @@ PubSub.configure(awsmobile);
 const useStyles = makeStyles((theme) => ({
     root: {
         background: pink[100],
-        padding: theme.spacing(2),
+        padding: theme.spacing(2, 2, 20),
     },
     progressBar: {
         position: 'fixed',
@@ -78,12 +79,14 @@ const App = () => {
     const [drawer, setDrawer] = useState(true);
     const [modal, setModal] = useState(false);
     const [dialog, setDialog] = useState(false);
-    const [snackBar, setSnackBar] = useState(true);
+    const [rankNotice, setRankNotice] = useState(true);
+    const [bingoNotice, setBingoNotice] = useState(false);
+    
     
 
     const [balls, setBalls] = useState(Array(9).fill(0).map((_, i) => i + 1));
     const [bingoCard, setBingoCard] = useState(makeBingoCard());
-    const [numberOfBingo, setNumberOfBingo] = useState(0);
+    const [bingoInfo, setBingoInfo] = useState({'prev': 0, 'current': 0});
     const [score, setScore] = useState(0);
 
     const [slotValues, setSlotValues] = useState(Array(9).fill(0).map((_, i) => i + 1));
@@ -92,16 +95,16 @@ const App = () => {
     
 
     const [rankers, setRankers] = useState<Ranker[]>([
-        { rank: 1, name: '二宮', from: '愛媛大学', bingoNumber: 12, score: 488 },
-        { rank: 2, name: '櫻井しょー', from: '長崎美容専門学校', bingoNumber: 7, score: 302 },
-        { rank: 2, name: '相葉', from: '九州大学', bingoNumber: 7, score: 302 },
-        { rank: 3, name: 'MJ', from: '大衆食堂しゃーき', bingoNumber: 6, score: 127 },
-        { rank: 4, name: '大野', from: '早稲田大学', bingoNumber: 5, score: 92 },
-        { rank: 1, name: '二宮', from: '愛媛大学', bingoNumber: 12, score: 488 },
-        { rank: 2, name: '櫻井しょー', from: '長崎美容専門学校', bingoNumber: 7, score: 302 },
-        { rank: 2, name: '相葉', from: '九州大学', bingoNumber: 7, score: 302 },
-        { rank: 3, name: 'MJ', from: '大衆食堂しゃーき', bingoNumber: 6, score: 127 },
-        { rank: 4, name: '大野', from: '早稲田大学', bingoNumber: 5, score: 92 },
+        { rank: 1, name: '二宮', from: '愛媛大学', numberOfBingo: 12, score: 488 },
+        { rank: 2, name: '櫻井しょー', from: '長崎美容専門学校', numberOfBingo: 7, score: 302 },
+        { rank: 2, name: '相葉', from: '九州大学', numberOfBingo: 7, score: 302 },
+        { rank: 3, name: 'MJ', from: '大衆食堂しゃーき', numberOfBingo: 6, score: 127 },
+        { rank: 4, name: '大野', from: '早稲田大学', numberOfBingo: 5, score: 92 },
+        { rank: 1, name: '二宮', from: '愛媛大学', numberOfBingo: 12, score: 488 },
+        { rank: 2, name: '櫻井しょー', from: '長崎美容専門学校', numberOfBingo: 7, score: 302 },
+        { rank: 2, name: '相葉', from: '九州大学', numberOfBingo: 7, score: 302 },
+        { rank: 3, name: 'MJ', from: '大衆食堂しゃーき', numberOfBingo: 6, score: 127 },
+        { rank: 4, name: '大野', from: '早稲田大学', numberOfBingo: 5, score: 92 },
     ]);
 
 
@@ -140,7 +143,6 @@ const App = () => {
     async function galapon(numberOfSlot: number = 1) {
         setNumberOfSlot(numberOfSlot);
         setModal(true);
-        // const updatedBingoCard = bingoCard.slice();
         const updatedBalls = balls.slice();
         const slotIndexes = Array(numberOfSlot).fill(0).map((_, i) => i);
         const drawnBalls: number[] = [];
@@ -174,7 +176,13 @@ const App = () => {
         const updatedNumberOfBingo = checkBingo();
         
         setBalls(updatedBalls);
-        setNumberOfBingo(updatedNumberOfBingo);
+        if (bingoInfo.current !== updatedNumberOfBingo) {
+            setBingoNotice(true);
+        }
+        setBingoInfo(state => ({
+            prev: state.current,
+            current: updatedNumberOfBingo
+        }));
         setScore(updatedScore);
         handleRankers(updatedNumberOfBingo, updatedScore);
     }
@@ -190,12 +198,12 @@ const App = () => {
         const prevIndex = newRankers.findIndex(ranker => ranker.iam);
         const newRanker = newRankers[prevIndex];
         if (newRanker !== undefined) {
-            newRanker.bingoNumber = numberOfBingo;
+            newRanker.numberOfBingo = numberOfBingo;
             newRanker.score = score;
         }
 
         newRankers.sort((a, b) => b.score - a.score);
-        newRankers.sort((a, b) => b.bingoNumber - a.bingoNumber);
+        newRankers.sort((a, b) => b.numberOfBingo - a.numberOfBingo);
         setRankers(newRankers);
 
         const currentIndex = newRankers.findIndex(ranker => ranker.iam);
@@ -248,7 +256,7 @@ const App = () => {
                 rank: 0,
                 name: post.displayName,
                 from: post.playerFrom,
-                bingoNumber: post.numberOfBingo,
+                numberOfBingo: post.numberOfBingo,
                 score: post.score
             }
         ));
@@ -258,7 +266,7 @@ const App = () => {
                 rank: 0,
                 name: 'あなた',
                 from: '',
-                bingoNumber: 0,
+                numberOfBingo: 0,
                 score: 0
             });
         }
@@ -314,7 +322,7 @@ const App = () => {
     function handleCloseModal() {
         setModal(false);
         if (rankInfo.prev !== rankInfo.current) {
-            setSnackBar(true);
+            setRankNotice(true);
         }
     }
 
@@ -340,31 +348,42 @@ const App = () => {
             <Snackbar
                 anchorOrigin={{
                     vertical: 'top',
-                    horizontal: 'center'
+                    horizontal: 'right'
                 }}
-                // autoHideDuration={3000}
-                onClose={() => setSnackBar(false)}
-                open={snackBar}
-                // message={
-                //     `${rankInfo.prev - rankInfo.current}人抜き（現在${rankInfo.current}位）`
-                // }
+                autoHideDuration={6000}
+                onClose={() => setRankNotice(false)}
+                open={rankNotice}
             >
                 <Alert severity='info' icon={<TrendingUp />}
                     className={classes.snackBar}>
-                    {rankInfo.prev - rankInfo.current}人抜き（現在{rankInfo.current}位）
+                    {rankInfo.prev - rankInfo.current}人抜き（現在{rankInfo.current || '最下'}位）
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                }}
+                // autoHideDuration={3000}
+                onClose={() => setBingoNotice(false)}
+                open={bingoNotice}
+            >
+                <Alert severity='info' icon={<Flare />}
+                    className={classes.snackBar}>
+                    {bingoInfo.current}ビンゴ
                 </Alert>
             </Snackbar>
 
             <Survey
                 galapon={galapon}
-                numberOfBingo={numberOfBingo}
+                numberOfBingo={bingoInfo.current}
                 score={score}
                 openDialog={handleOpenDialog}
             />
-            <ul>
-                <li>numberOfBingo: {numberOfBingo}</li>
+            {/* <ul>
+                <li>numberOfBingo: {bingoInfo.current}</li>
                 <li>score: {score}</li>
-            </ul>
+            </ul> */}
 
             <Modal
                 open={modal}

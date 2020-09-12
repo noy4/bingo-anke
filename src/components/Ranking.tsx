@@ -44,7 +44,7 @@ export interface Ranker {
     rank: number,
     name: string,
     from: string,
-    bingoNumber: number,
+    numberOfBingo: number,
     score: number,
 }
 
@@ -75,7 +75,7 @@ const Ranking: React.FC<RankingProps> = (props) => {
                                 </Typography>
                                 <Grid container justify="space-between">
                                     <Typography className={classes.numberOfBingo}>
-                                        {ranker.bingoNumber}{" BINGO"}
+                                        {ranker.numberOfBingo}{" BINGO"}
                                     </Typography>
                                     <Typography>{ranker.score}点</Typography>
                                 </Grid>
