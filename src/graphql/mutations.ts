@@ -9,9 +9,9 @@ export const createPost = /* GraphQL */ `
     createPost(input: $input, condition: $condition) {
       type
       id
-      content
+      contents
       displayName
-      playerFrom
+      from
       numberOfBingo
       score
       timestamp
@@ -26,9 +26,9 @@ export const updatePost = /* GraphQL */ `
     updatePost(input: $input, condition: $condition) {
       type
       id
-      content
+      contents
       displayName
-      playerFrom
+      from
       numberOfBingo
       score
       timestamp
@@ -43,9 +43,9 @@ export const deletePost = /* GraphQL */ `
     deletePost(input: $input, condition: $condition) {
       type
       id
-      content
+      contents
       displayName
-      playerFrom
+      from
       numberOfBingo
       score
       timestamp

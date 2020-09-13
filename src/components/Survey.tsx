@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Galapon, { GalaponProps } from './Galapon';
 import { createPost } from '../graphql/mutations';
-import { onCreatePost } from '../graphql/subscriptions';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { CreatePostInput, OnCreatePostSubscription } from '../API';//eslint-disable-line
 import { makeStyles } from "@material-ui/core/styles";
@@ -43,8 +42,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Ivalues {
-    // playerFamilyName?: string;
-    // playerSex: string;
     [key: string]: any;
 }
 
@@ -60,10 +57,7 @@ interface SurveyProps extends GalaponProps {
 
 const Survey = (props: SurveyProps) => {
     const classes = useStyles();
-    const [values, setValues] = useState<Ivalues>({
-        // playerName: '',
-        // playerSex: '',
-    });
+    const [values, setValues] = useState<Ivalues>({});
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -79,13 +73,13 @@ const Survey = (props: SurveyProps) => {
 
     const onPost = async () => {
         setLoading(true);
-        const { playerRankingName, playerFrom, ...contents } = values;
+        const { displayName, from, ...contents } = values;
         const res = await API.graphql(graphqlOperation(createPost, {
             input: {
                 type: 'post',
-                content: JSON.stringify(contents),
-                displayName: playerRankingName || values.playerFamilyName,
-                playerFrom: playerFrom || '',
+                contents: JSON.stringify(contents),
+                displayName: displayName || values.familyName,
+                from: from || '',
                 numberOfBingo: props.numberOfBingo,
                 score: props.score,
                 timestamp: Date.now(),
@@ -114,58 +108,59 @@ const Survey = (props: SurveyProps) => {
                         名前
                     </Typography>
                     <TextField
-                        name="playerFamilyName"
+                        name="familyName"
                         required
                         helperText='必須*'
                         onChange={handleInputChange}
-                        value={values.playerFamilyName || ''}
+                        value={values.familyName || ''}
                         placeholder="姓"
                         margin="normal"
                         className={classes.nameField}
                     />
                     <TextField
-                        name="playerFirstName"
+                        name="firstName"
                         onChange={handleInputChange}
-                        value={values.playerFirstName || ''}
+                        value={values.firstName || ''}
                         placeholder="名"
                         margin="normal"
                         className={classes.nameField}
                     />
                     <Galapon
-                        galable={Boolean(values.playerFirstName?.trim() && values.playerFamilyName?.trim())}
-                        galapon={() => props.galapon(4)} />
+                        galable={Boolean(values.firstName?.trim() && values.familyName?.trim())}
+                        galapon={() => props.galapon(1)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="h6">
                         ランキング表示名
                     </Typography>
                     <TextField
-                        name="playerRankingName"
+                        name="displayName"
                         onChange={handleInputChange}
-                        value={values.playerRankingName || ''}
-                        placeholder={`未入力で${values.playerFamilyName?.trim() || '姓'}になります`}
+                        value={values.displayName || ''}
+                        placeholder={`未入力で${values.familyName?.trim() || '姓'}になります`}
                         margin="normal"
                         fullWidth
                     />
                     <Galapon
-                        galable={Boolean(values.playerFamilyName?.trim() || values.playerRankingName?.trim())}
-                        galapon={() => props.galapon(4)} />
+                        galable={Boolean(values.familyName?.trim() || values.displayName?.trim())}
+                        galapon={() => props.galapon(2)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="h6">
                         所属
                     </Typography>
                     <TextField
-                        name="playerFrom"
+                        name="from"
                         onChange={handleInputChange}
-                        value={values.playerFrom || ''}
+                        value={values.from || ''}
                         placeholder="例）九州大学"
+                        helperText='ランキングに載ります*'
                         margin="normal"
                         fullWidth
                     />
                     <Galapon
-                        galable={Boolean(values.playerFrom?.trim())}
-                        galapon={() => props.galapon(4)} />
+                        galable={Boolean(values.from?.trim())}
+                        galapon={() => props.galapon(3)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="h6">
@@ -173,8 +168,8 @@ const Survey = (props: SurveyProps) => {
                     </Typography>
                     <RadioGroup
                         aria-label="gender"
-                        name="playerSex"
-                        value={values.playerSex || ''}
+                        name="sex"
+                        value={values.sex || ''}
                         onChange={handleInputChange}>
 
                         <FormControlLabel value="male" control={<Radio />} label="男性" />
@@ -182,7 +177,7 @@ const Survey = (props: SurveyProps) => {
                     </RadioGroup>
                     <Galapon
                         galapon={() => props.galapon(4)}
-                        galable={Boolean(values.playerSex)}
+                        galable={Boolean(values.sex)}
                     />
                 </Paper>
                 <Paper className={classes.paper}>
@@ -209,13 +204,13 @@ const Survey = (props: SurveyProps) => {
                         </RadioGroup>
                     </Grid>
                     <Galapon
-                        galapon={() => props.galapon(4)}
+                        galapon={() => props.galapon(5)}
                         galable={Boolean(values.fivePoint)}
                     />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="subtitle1">
-                        どの辺がどういうふうにどの程度悲しいですか。
+                        なんでそんなに悲しいですか。
                     </Typography>
                     <TextField
                         name="textarea"
@@ -228,7 +223,69 @@ const Survey = (props: SurveyProps) => {
                     />
                     <Galapon
                         galable={Boolean(values.textarea?.trim())}
-                        galapon={() => props.galapon(3)} />
+                        galapon={() => props.galapon(6)} />
+                </Paper>
+                <Paper className={classes.paper}>
+                    <Typography variant="subtitle1">
+                        1人で悩んでいませんか。
+                    </Typography>
+                    <Grid container justify='space-between'>
+                        <Typography variant='subtitle2'>悩んでいない</Typography>
+                        <Typography variant='subtitle2'>悩んでいる</Typography>
+                    </Grid>
+                    <Grid container justify='center'>
+                        <RadioGroup
+                            row
+                            aria-label="q1"
+                            name="q1"
+                            value={values.q1 || ''}
+                            onChange={handleInputChange}>
+
+                            <FormControlLabel value="one" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="1" />
+                            <FormControlLabel value="two" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="2" />
+                            <FormControlLabel value="three" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="3" />
+                            <FormControlLabel value="four" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="4" />
+                            <FormControlLabel value="five" labelPlacement='top' control={<Radio />} className={classes.rowRadio} label="5" />
+                        </RadioGroup>
+                    </Grid>
+                    <Galapon
+                        galapon={() => props.galapon(7)}
+                        galable={Boolean(values.q1)}
+                    />
+                </Paper>
+                <Paper className={classes.paper}>
+                    <Typography variant="subtitle1">
+                        悩みは解決しそうですか。
+                    </Typography>
+                    <TextField
+                        name="q2"
+                        onChange={handleInputChange}
+                        value={values.q2 || ''}
+                        placeholder="回答"
+                        margin="normal"
+                        fullWidth
+                        multiline
+                    />
+                    <Galapon
+                        galable={Boolean(values.q2?.trim())}
+                        galapon={() => props.galapon(8)} />
+                </Paper>
+                <Paper className={classes.paper}>
+                    <Typography variant="subtitle1">
+                        頑張ってください。
+                    </Typography>
+                    <TextField
+                        name="q3"
+                        onChange={handleInputChange}
+                        value={values.q3 || ''}
+                        placeholder="回答"
+                        margin="normal"
+                        fullWidth
+                        multiline
+                    />
+                    <Galapon
+                        galable={Boolean(values.q3?.trim())}
+                        galapon={() => props.galapon(9)} />
                 </Paper>
                 <Paper className={classes.paper}>
                     <Typography variant="subtitle1">
@@ -245,7 +302,7 @@ const Survey = (props: SurveyProps) => {
                         <FormControlLabel control={<Checkbox name='twitter' checked={values.twitter || false} />} label="Twitter" />
                     </FormGroup>
                     <Galapon
-                        galapon={() => props.galapon(4)}
+                        galapon={() => props.galapon(15)}
                     />
                 </Paper>
 

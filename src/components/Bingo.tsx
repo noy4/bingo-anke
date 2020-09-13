@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import {Avatar, Grid, Box, Paper} from '@material-ui/core';
-import { pink, blue } from '@material-ui/core/colors';
+import { blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     paper: {

@@ -26,6 +26,11 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(0.5),
         fontSize: '1.4em',
     },
+    slot5: {
+        padding: theme.spacing(2.8),
+        margin: theme.spacing(0.5),
+        fontSize: '1em',
+    },
 }));
 
 interface SlotsProps {
@@ -38,7 +43,10 @@ const Slots = (props: SlotsProps) => {
     const slots = [];
     for (let i = 0; i < props.numberOfSlot; i++) {
         slots.push(
-            <Avatar className={eval('classes.slot' + props.numberOfSlot)} key={i}>
+            <Avatar
+                className={eval('classes.slot' + (props.numberOfSlot >= 5 ? 5 : props.numberOfSlot))} //eslint-disable-line
+                key={i}>
+
                 <Box component="h1">{props.slotValues[i]}</Box>
             </Avatar>
         );

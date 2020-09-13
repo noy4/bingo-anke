@@ -23,7 +23,7 @@ export default function Galapon(props: GalaponProps) {
                 disableElevation
                 onClick={() => {
                     props.galapon();
-                    // setDisabled(true);
+                    setDisabled(true);
                 }}
                 disabled={!props.galable || disabled}
             >

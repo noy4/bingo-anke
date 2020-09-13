@@ -5,9 +5,9 @@ type Post
 {
   type: String!
   id: ID
-  content: AWSJSON!
+  contents: AWSJSON!
   displayName: String!
-  playerFrom: String!
+  from: String!
   numberOfBingo: Int!
   score: Int!
   timestamp: AWSTimestamp!

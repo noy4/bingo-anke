@@ -7,7 +7,6 @@ import Slots from './components/Slots';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { CreatePostInput, OnCreatePostSubscription } from './API';//eslint-disable-line
 import { listPostsSortedByScore } from './graphql/queries';
-import { onCreatePost } from './graphql/subscriptions';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Container, CssBaseline, Fab, Drawer,
@@ -58,7 +57,7 @@ const App = () => {
     const classes = useStyles();
 
     const [progress, setProgress] = useState(0);    //プログレスバー割合
-    const [drawer, setDrawer] = useState(true);     //サイドメニューフラグ
+    const [drawer, setDrawer] = useState(false);    //サイドメニューフラグ
     const [modal, setModal] = useState(false);      //モーダルフラグ
     const [dialog, setDialog] = useState(false);    //送信完了ダイアログフラグ
     const [rankNotice, setRankNotice] = useState(true);     //ランク上昇通知フラグ
@@ -69,11 +68,11 @@ const App = () => {
     const [bingoInfo, setBingoInfo] = useState({'prev': 0, 'current': 0});      //ビンゴ状況（更新前：更新後）（現在prev未使用）
     const [score, setScore] = useState(0);                                      //スコア
 
-    const [slotValues, setSlotValues] = useState(Array(9).fill(0));         //スロットに表示する番号[]
     const [numberOfSlot, setNumberOfSlot] = useState(1);                    //スロットの数
+    const [slotValues, setSlotValues] = useState(Array(15).fill(75));       //スロットに表示する番号[]
     const [rankInfo, setRankInfo] = useState({'prev': 0, 'current': 0});    //ランク状況（更新前：更新後）
     
-
+    //ランキング表示するプレイヤーたち
     const [rankers, setRankers] = useState<Ranker[]>([
         { rank: 1, name: '二宮', from: '愛媛大学', numberOfBingo: 12, score: 488 },
         { rank: 2, name: '櫻井しょー', from: '長崎美容専門学校', numberOfBingo: 7, score: 302 },
@@ -87,7 +86,7 @@ const App = () => {
         { rank: 4, name: '大野', from: '早稲田大学', numberOfBingo: 5, score: 92 },
     ]);
 
-
+    //ビンゴカードを作る
     function makeBingoCard() {
         const col_1 = makeColumn(1);
         const col_2 = makeColumn(16);
@@ -99,9 +98,9 @@ const App = () => {
             'value': 0,
             'isValid': true,
         };
-        // console.log(list);
         return list;
     }
+    //ビンゴカードの1列を作る
     function makeColumn(base: number) {
         const array = Array(15).fill(0).map((_, i) => i + base);
         const list = [];
@@ -113,6 +112,7 @@ const App = () => {
         return list;
     }
 
+    //スロットに番号をセットする
     function slot(slotIndexes: number[]) {
         const a = ~~(Math.random() * balls.length);
         const updatedSlotValues: number[] = [];
@@ -122,6 +122,7 @@ const App = () => {
         setSlotValues(state => ({...state, ...updatedSlotValues}));
     }
 
+    //ガラポンを回す
     async function galapon(numberOfSlot: number = 1) {
         setNumberOfSlot(numberOfSlot);
         setModal(true);
@@ -169,12 +170,14 @@ const App = () => {
         handleRankers(updatedNumberOfBingo, updatedScore);
     }
 
+    //引数秒待つ
     function sleep(waitSec: number) {
         return new Promise(function (resolve) {
             setTimeout(function () { resolve(); }, waitSec);
         });
     }
 
+    //回答者の順位を計算する
     function handleRankers(numberOfBingo: number, score: number) {
         const newRankers = rankers.slice();
         const prevIndex = newRankers.findIndex(ranker => ranker.iam);
@@ -191,7 +194,8 @@ const App = () => {
         const currentIndex = newRankers.findIndex(ranker => ranker.iam);
         setRankInfo({'prev': prevIndex + 1, 'current': currentIndex + 1});
     }
-
+    
+    //ビンゴの数をチェックする
     function checkBingo() {
         let counter = 0;
         const lines = [
@@ -233,38 +237,35 @@ const App = () => {
         setProgress(scrollRate);
     }
 
-    const getPosts = async (init = false, nextToken = null) => {
+    const getPosts = async (nextToken = null) => {
         const res = await API.graphql(graphqlOperation(listPostsSortedByScore, {
             type: "post",
             sortDirection: 'DESC',
-            limit: 100,
+            limit: 200,
             nextToken: nextToken,
         }));
         const newRankers = res.data.listPostsSortedByScore.items.map((post: CreatePostInput) => (
             {
                 rank: 0,
                 name: post.displayName,
-                from: post.playerFrom,
+                from: post.from,
                 numberOfBingo: post.numberOfBingo,
                 score: post.score
             }
         ));
-        if (init) {
-            newRankers.push({
-                iam: true,
-                rank: 0,
-                name: 'あなた',
-                from: '',
-                numberOfBingo: 0,
-                score: 0
-            });
-        }
-        // setRankers(state => ([...newRankers, ...state]));
+        newRankers.push({
+            iam: true,
+            rank: 0,
+            name: 'あなた',
+            from: '',
+            numberOfBingo: 0,
+            score: 0
+        });
         setRankers(newRankers);
     };
 
     useEffect(() => {
-        getPosts(true);
+        getPosts();
         document.addEventListener('scroll', calculateScrollRate);
         
         // const subscription = API.graphql(graphqlOperation(onCreatePost)).subscribe({

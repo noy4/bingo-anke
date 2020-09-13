@@ -6,9 +6,9 @@ export const getPost = /* GraphQL */ `
     getPost(id: $id) {
       type
       id
-      content
+      contents
       displayName
-      playerFrom
+      from
       numberOfBingo
       score
       timestamp
@@ -25,9 +25,9 @@ export const listPosts = /* GraphQL */ `
       items {
         type
         id
-        content
+        contents
         displayName
-        playerFrom
+        from
         numberOfBingo
         score
         timestamp
@@ -56,9 +56,9 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
       items {
         type
         id
-        content
+        contents
         displayName
-        playerFrom
+        from
         numberOfBingo
         score
         timestamp
@@ -87,9 +87,9 @@ export const listPostsSortedByScore = /* GraphQL */ `
       items {
         type
         id
-        content
+        contents
         displayName
-        playerFrom
+        from
         numberOfBingo
         score
         timestamp

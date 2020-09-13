@@ -6,9 +6,9 @@ export const onCreatePost = /* GraphQL */ `
     onCreatePost {
       type
       id
-      content
+      contents
       displayName
-      playerFrom
+      from
       numberOfBingo
       score
       timestamp
@@ -20,9 +20,9 @@ export const onUpdatePost = /* GraphQL */ `
     onUpdatePost {
       type
       id
-      content
+      contents
       displayName
-      playerFrom
+      from
       numberOfBingo
       score
       timestamp
@@ -34,9 +34,9 @@ export const onDeletePost = /* GraphQL */ `
     onDeletePost {
       type
       id
-      content
+      contents
       displayName
-      playerFrom
+      from
       numberOfBingo
       score
       timestamp

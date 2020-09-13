@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from "@material-ui/core/styles";
 import {
-    Grid, Typography, List, ListItem, ListItemAvatar,
+    Grid, Typography, List, ListItemAvatar,
     Avatar,
     Paper,
 } from "@material-ui/core";
