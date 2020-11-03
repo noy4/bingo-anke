@@ -1,21 +1,17 @@
-import React from 'react';
-import Ranking, {RankingProps} from './Ranking';
-import Bingo, {BingoProps} from './Bingo';
-import { makeStyles } from "@material-ui/core/styles";
-import {
-    Grid, Box
-} from "@material-ui/core";
+import React from 'react'
+import Ranking from './Ranking'
+import Bingo from './Bingo'
+import { makeStyles } from '@material-ui/core/styles'
+import { Grid, Box } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
     drawerGrid: {
-        height: "100%",
+        height: '100%',
     },
-}));
+}))
 
-interface MenuProps extends RankingProps, BingoProps {}
-
-const Menu: React.FC<MenuProps> = (props) => {
-    const classes = useStyles();
+const Menu = () => {
+    const classes = useStyles()
 
     return (
         <Grid
@@ -25,12 +21,12 @@ const Menu: React.FC<MenuProps> = (props) => {
             alignItems="center"
             className={classes.drawerGrid}
         >
-            <Ranking rankers={props.rankers} />
+            <Ranking />
             <Box p={2}>
-                <Bingo bingoCard={props.bingoCard} />
+                <Bingo />
             </Box>
         </Grid>
-    );
-};
+    )
+}
 
-export default Menu;
+export default Menu
