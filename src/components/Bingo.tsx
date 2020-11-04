@@ -3,8 +3,8 @@ import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import { Avatar, Grid, Box, Paper } from '@material-ui/core'
 import { blue } from '@material-ui/core/colors'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectBingoCard, Square } from '../features/counter/counterSlice'
+import { useSelector } from 'react-redux'
+import { selectBingoCard, Square } from '../features/user/userSlice'
 
 const useStyles = makeStyles((theme) => ({
     paper: {

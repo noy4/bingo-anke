@@ -45,5 +45,7 @@ module.exports = {
                 imports: 'always-multiline',
             },
         ],
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': 'error',
     },
 }

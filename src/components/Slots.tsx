@@ -2,10 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Avatar, Box, Grid } from '@material-ui/core'
 import { useSelector } from 'react-redux'
-import {
-    selectSlotCount,
-    selectSlotValues,
-} from '../features/counter/counterSlice'
+import { selectSlotCount, selectSlotValues } from '../features/user/userSlice'
 
 const useStyles = makeStyles((theme) => ({
     slots: {

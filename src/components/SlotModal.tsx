@@ -1,21 +1,33 @@
 import { Modal, Box } from '@material-ui/core'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { handleCloseModal, selectModal } from '../features/counter/counterSlice'
+import { selectRankInfo } from '../features/user/userSlice'
+import {
+    selectModal,
+    setModal,
+    setRankNotice,
+} from '../features/system/systemSlice'
 import Bingo from './Bingo'
 import Slots from './Slots'
 
 const SlotModal = () => {
-    const modal = useSelector(selectModal)
     const dispatch = useDispatch()
+    const modal = useSelector(selectModal)
+    const rankInfo = useSelector(selectRankInfo)
+
+    function handleCloseModal() {
+        dispatch(setModal(false))
+        if (rankInfo.prev !== rankInfo.current) {
+            dispatch(setRankNotice(true))
+        }
+    }
+
     return (
         <Modal
             open={modal}
             disableAutoFocus
             disableEnforceFocus
-            onClose={() => {
-                dispatch(handleCloseModal())
-            }}
+            onClose={handleCloseModal}
         >
             <Box width={272} mx="auto">
                 <Slots />

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Survey from './components/Survey'
 import Menu from './components/Menu'
 import DoneDialog from './components/DoneDialog'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { CreatePostInput, OnCreatePostSubscription } from './API' //eslint-disable-line
+import { CreatePostInput } from './API'
 import { listPostsSortedByScore } from './graphql/queries'
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -12,30 +12,23 @@ import {
     Fab,
     Drawer,
     LinearProgress,
-    Snackbar,
 } from '@material-ui/core'
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert'
 import MenuIcon from '@material-ui/icons/Menu'
-import TrendingUp from '@material-ui/icons/TrendingUp'
-import Flare from '@material-ui/icons/Flare'
 
 import Amplify from '@aws-amplify/core'
 import PubSub from '@aws-amplify/pubsub'
 import awsmobile from './aws-exports'
 import { pink } from '@material-ui/core/colors'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-    selectBingoCount,
-    selectBingoNotice,
-    selectDrawer,
-    selectRankInfo,
-    selectRankNotice,
-    setBingoNotice,
-    setDrawer,
-    setRankers,
-    setRankNotice,
-} from './features/counter/counterSlice'
+import { setRankers } from './features/user/userSlice'
 import SlotModal from './components/SlotModal'
+import {
+    selectDrawer,
+    setDrawer,
+    selectProgress,
+    calculateScrollRate,
+} from './features/system/systemSlice'
+import NoticeSnackbar, { NOTICE } from './components/NoticeSnackbar'
 
 Amplify.configure(awsmobile)
 PubSub.configure(awsmobile)
@@ -65,25 +58,10 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
     const classes = useStyles()
 
-    const [progress, setProgress] = useState(0) //プログレスバー割合
+    const progress = useSelector(selectProgress) //プログレスバー割合
     const drawer = useSelector(selectDrawer) //サイドメニューフラグ
-    const rankNotice = useSelector(selectRankNotice) //ランク上昇通知フラグ
-    const bingoNotice = useSelector(selectBingoNotice) //ビンゴ通知フラグ
-    const bingoCount = useSelector(selectBingoCount) //ビンゴ状況（更新前：更新後）（現在prev未使用）
-    const rankInfo = useSelector(selectRankInfo) //ランク状況（更新前：更新後）
 
     const dispatch = useDispatch()
-
-    function calculateScrollRate() {
-        const innerHeight = window.innerHeight
-        const element = document.getElementById('root') || new HTMLHtmlElement()
-        const rect = element?.getBoundingClientRect()
-        const elementHeight = rect?.height
-        const scrollMax = elementHeight - innerHeight
-        const scrollY = window.pageYOffset
-        const scrollRate = ~~((scrollY / scrollMax) * 100)
-        setProgress(scrollRate)
-    }
 
     const getPosts = async (nextToken = null) => {
         const res = await API.graphql(
@@ -116,12 +94,10 @@ const App = () => {
 
     useEffect(() => {
         getPosts()
-        document.addEventListener('scroll', calculateScrollRate)
+        document.addEventListener('scroll', () =>
+            dispatch(calculateScrollRate())
+        )
     }, [])
-
-    const Alert = (props: AlertProps) => {
-        return <MuiAlert elevation={6} variant="filled" {...props} />
-    }
 
     return (
         <Container className={classes.root} maxWidth="xs">
@@ -137,7 +113,6 @@ const App = () => {
             >
                 <MenuIcon />
             </Fab>
-
             <Drawer
                 anchor="left"
                 open={drawer}
@@ -146,46 +121,11 @@ const App = () => {
                 <Menu />
             </Drawer>
 
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                autoHideDuration={6000}
-                onClose={() => dispatch(setRankNotice(false))}
-                open={rankNotice}
-            >
-                <Alert
-                    severity="info"
-                    icon={<TrendingUp />}
-                    className={classes.snackBar}
-                >
-                    {rankInfo.prev - rankInfo.current}人抜き（現在
-                    {rankInfo.current || '最下'}位）
-                </Alert>
-            </Snackbar>
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                // autoHideDuration={3000}
-                onClose={() => dispatch(setBingoNotice(false))}
-                open={bingoNotice}
-            >
-                <Alert
-                    severity="info"
-                    icon={<Flare />}
-                    className={classes.snackBar}
-                >
-                    {bingoCount}ビンゴ
-                </Alert>
-            </Snackbar>
-
             <Survey />
-
             <SlotModal />
 
+            <NoticeSnackbar type={NOTICE.RANK} />
+            <NoticeSnackbar type={NOTICE.BINGO} />
             <DoneDialog />
         </Container>
     )

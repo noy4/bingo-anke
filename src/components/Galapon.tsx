@@ -12,13 +12,12 @@ import {
     setBalls,
     setBingoCard,
     setBingoCount,
-    setBingoNotice,
-    setModal,
     setScore,
     setSlotCount,
     setSlotValues,
-} from '../features/counter/counterSlice'
+} from '../features/user/userSlice'
 import { checkBingo } from './Bingo'
+import { setModal, setBingoNotice } from '../features/system/systemSlice'
 
 export interface GalaponProps {
     galable?: boolean
@@ -58,26 +57,31 @@ export default function Galapon(props: GalaponProps) {
 
         await sleep(500)
         let updatedScore = score
+        const bingoCardSlice = [...bingoCard]
         for (let i = 0; i < slotCount; i++) {
             const squareIndex = bingoCard.findIndex(
                 (square) => square.value === drawnBalls[i]
             )
             if (squareIndex !== -1) {
                 await sleep(200)
+                bingoCardSlice[squareIndex] = {
+                    ...bingoCardSlice[squareIndex],
+                    isValid: true,
+                }
                 dispatch(setBingoCard(squareIndex))
                 updatedScore += drawnBalls[i]
             }
         }
 
-        const updatedNumberOfBingo = checkBingo(bingoCard)
+        const updatedBingoCount = checkBingo(bingoCardSlice)
 
-        dispatch(setBalls(updatedBalls))
-        if (bingoCount !== updatedNumberOfBingo) {
+        if (bingoCount !== updatedBingoCount) {
             dispatch(setBingoNotice(true))
         }
-        dispatch(setBingoCount(updatedNumberOfBingo))
+        dispatch(setBingoCount(updatedBingoCount))
         dispatch(setScore(updatedScore))
-        dispatch(handleRankers({ updatedNumberOfBingo, updatedScore }))
+        dispatch(setBalls(updatedBalls))
+        dispatch(handleRankers({ updatedBingoCount, updatedScore }))
     }
 
     //スロットに番号をセットする

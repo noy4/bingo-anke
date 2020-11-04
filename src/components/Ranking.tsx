@@ -10,7 +10,7 @@ import {
     Paper,
 } from '@material-ui/core'
 import { blue, pink } from '@material-ui/core/colors'
-import { selectRankers } from '../features/counter/counterSlice'
+import { selectRankers } from '../features/user/userSlice'
 import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({

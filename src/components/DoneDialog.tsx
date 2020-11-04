@@ -12,7 +12,7 @@ import {
     selectDoneDialog,
     setDoneDialog,
     setDrawer,
-} from '../features/counter/counterSlice'
+} from '../features/system/systemSlice'
 
 const DoneDialog = () => {
     const doneDialog = useSelector(selectDoneDialog)

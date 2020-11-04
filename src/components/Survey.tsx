@@ -18,12 +18,12 @@ import {
 } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-    setPlayerInfo,
-    selectPlayerInfo,
+    setAnswers,
+    selectAnswers,
     selectScore,
     selectBingoCount,
-    setDoneDialog,
-} from '../features/counter/counterSlice'
+    updateRankingCard,
+} from '../features/user/userSlice'
 import {
     questions,
     FIVE_POINT,
@@ -35,7 +35,8 @@ import {
     questionsCount,
     title,
     NUMBER,
-} from '../questions'
+} from '../app/questions'
+import { setDoneDialog } from '../features/system/systemSlice'
 
 const useStyles = makeStyles((theme) => ({
     titlePaper: {
@@ -80,7 +81,7 @@ const Survey = () => {
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const score = useSelector(selectScore)
-    const playerInfo = useSelector(selectPlayerInfo)
+    const answers = useSelector(selectAnswers)
     const bingoCount = useSelector(selectBingoCount)
     const dispatch = useDispatch()
 
@@ -91,19 +92,22 @@ const Survey = () => {
                 target.type === 'checkbox' ? target.checked : target.value
             const name = target.name
             console.log(name, value)
-            dispatch(setPlayerInfo({ [name]: value }))
+            dispatch(setAnswers({ [name]: value }))
+            if (['familyName', 'displayName', 'from'].includes(name)) {
+                dispatch(updateRankingCard({ key: name, value }))
+            }
         }
     }
 
     const onPost = async () => {
         setLoading(true)
-        const { displayName, from, ...contents } = playerInfo
+        const { displayName, from, ...contents } = answers
         const res = await API.graphql(
             graphqlOperation(createPost, {
                 input: {
                     type: 'post',
                     contents: JSON.stringify(contents),
-                    displayName: displayName || playerInfo.familyName,
+                    displayName: displayName || answers.familyName,
                     from: from || '',
                     numberOfBingo: bingoCount,
                     score: score,
@@ -119,7 +123,7 @@ const Survey = () => {
         }
     }
 
-    const RadioLabel = [...Array(5)].map((_, i) => (
+    const FiveRadio = [...Array(5)].map((_, i) => (
         <FormControlLabel
             key={i}
             value={String(i + 1)}
@@ -140,7 +144,7 @@ const Survey = () => {
                             required
                             helperText="必須*"
                             onChange={handleInputChange}
-                            value={playerInfo.familyName || ''}
+                            value={answers.familyName || ''}
                             placeholder="姓"
                             margin="normal"
                             className={classes.halfField}
@@ -148,7 +152,7 @@ const Survey = () => {
                         <TextField
                             name="firstName"
                             onChange={handleInputChange}
-                            value={playerInfo.firstName || ''}
+                            value={answers.firstName || ''}
                             placeholder="名"
                             margin="normal"
                             className={classes.halfField}
@@ -156,8 +160,8 @@ const Survey = () => {
                         <Galapon
                             slotCount={item.slotCount}
                             galable={Boolean(
-                                playerInfo.firstName?.trim() &&
-                                    playerInfo.familyName?.trim()
+                                answers.firstName?.trim() &&
+                                    answers.familyName?.trim()
                             )}
                         />
                     </>
@@ -169,9 +173,9 @@ const Survey = () => {
                         <TextField
                             name="displayName"
                             onChange={handleInputChange}
-                            value={playerInfo.displayName || ''}
+                            value={answers.displayName || ''}
                             placeholder={`未入力で${
-                                playerInfo.familyName?.trim() || '姓'
+                                answers.familyName?.trim() || '姓'
                             }になります`}
                             margin="normal"
                             fullWidth
@@ -179,8 +183,8 @@ const Survey = () => {
                         <Galapon
                             slotCount={item.slotCount}
                             galable={Boolean(
-                                playerInfo.familyName?.trim() ||
-                                    playerInfo.displayName?.trim()
+                                answers.familyName?.trim() ||
+                                    answers.displayName?.trim()
                             )}
                         />
                     </>
@@ -192,7 +196,7 @@ const Survey = () => {
                         <TextField
                             name="from"
                             onChange={handleInputChange}
-                            value={playerInfo.from || ''}
+                            value={answers.from || ''}
                             placeholder="例）九州大学"
                             helperText="ランキングに載ります*"
                             margin="normal"
@@ -200,7 +204,7 @@ const Survey = () => {
                         />
                         <Galapon
                             slotCount={item.slotCount}
-                            galable={Boolean(playerInfo.from?.trim())}
+                            galable={Boolean(answers.from?.trim())}
                         />
                     </>
                 )
@@ -211,7 +215,7 @@ const Survey = () => {
                         <RadioGroup
                             aria-label="gender"
                             name="sex"
-                            value={playerInfo.sex || ''}
+                            value={answers.sex || ''}
                             onChange={handleInputChange}
                         >
                             <FormControlLabel
@@ -227,7 +231,7 @@ const Survey = () => {
                         </RadioGroup>
                         <Galapon
                             slotCount={item.slotCount}
-                            galable={Boolean(playerInfo.sex)}
+                            galable={Boolean(answers.sex)}
                         />
                     </>
                 )
@@ -240,10 +244,10 @@ const Survey = () => {
                                 row
                                 aria-label={item.id}
                                 name={item.id}
-                                value={playerInfo[item.id] || ''}
+                                value={answers[item.id] || ''}
                                 onChange={handleInputChange}
                             >
-                                {RadioLabel}
+                                {FiveRadio}
                             </RadioGroup>
                         </Grid>
                         <Grid
@@ -260,7 +264,7 @@ const Survey = () => {
                         </Grid>
                         <Galapon
                             slotCount={item.slotCount}
-                            galable={Boolean(playerInfo[item.id])}
+                            galable={Boolean(answers[item.id])}
                         />
                     </>
                 )
@@ -271,7 +275,7 @@ const Survey = () => {
                         <TextField
                             name={item.id}
                             onChange={handleInputChange}
-                            value={playerInfo[item.id] || ''}
+                            value={answers[item.id] || ''}
                             placeholder="回答"
                             margin="normal"
                             fullWidth
@@ -280,7 +284,7 @@ const Survey = () => {
 
                         <Galapon
                             slotCount={item.slotCount}
-                            galable={Boolean(playerInfo[item.id]?.trim())}
+                            galable={Boolean(answers[item.id]?.trim())}
                         />
                     </>
                 )
@@ -292,7 +296,7 @@ const Survey = () => {
                             name={item.id}
                             type="number"
                             onChange={handleInputChange}
-                            value={playerInfo[item.id]}
+                            value={answers[item.id]}
                             placeholder="0"
                             InputProps={{
                                 endAdornment: (
@@ -307,7 +311,7 @@ const Survey = () => {
                         />
                         <Galapon
                             slotCount={item.slotCount}
-                            galable={Boolean(playerInfo[item.id]?.trim())}
+                            galable={Boolean(answers[item.id]?.trim())}
                         />
                     </>
                 )
