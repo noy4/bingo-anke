@@ -273,13 +273,14 @@ const Survey = (props: SurveyProps) => {
                             fullWidth
                             multiline
                         />
-
-                        <Galapon
-                            slotCount={item.slotCount}
-                            galable={Boolean(
-                                answers[props.type][item.id]?.trim()
-                            )}
-                        />
+                        {props.bingo && (
+                            <Galapon
+                                slotCount={item.slotCount}
+                                galable={Boolean(
+                                    answers[props.type][item.id]?.trim()
+                                )}
+                            />
+                        )}
                     </>
                 )
                 break
@@ -303,12 +304,14 @@ const Survey = (props: SurveyProps) => {
                             fullWidth
                             className={classes.halfField}
                         />
-                        <Galapon
-                            slotCount={item.slotCount}
-                            galable={Boolean(
-                                answers[props.type][item.id]?.trim()
-                            )}
-                        />
+                        {props.bingo && (
+                            <Galapon
+                                slotCount={item.slotCount}
+                                galable={Boolean(
+                                    answers[props.type][item.id]?.trim()
+                                )}
+                            />
+                        )}
                     </>
                 )
                 break
@@ -365,7 +368,7 @@ const Survey = (props: SurveyProps) => {
 }
 
 Survey.defaultProps = {
-    bingo: true,
+    bingo: false,
 }
 
 export default Survey

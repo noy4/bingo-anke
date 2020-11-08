@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import Survey from './components/Survey'
 import Menu from './components/Menu'
 import DoneDialog from './components/DoneDialog'
 import API, { graphqlOperation } from '@aws-amplify/api'
@@ -27,11 +26,17 @@ import {
     setDrawer,
     selectProgress,
     calculateScrollRate,
+    setBingo,
+    selectBingo,
+    selectRanking,
+    setRanking,
 } from './features/system/systemSlice'
 import NoticeSnackbar, { NOTICE } from './components/NoticeSnackbar'
 import ExperimentSurvey from './components/ExperimentSurvey'
 import EvaluationSurvey from './components/EvaluationSurvey'
 import BonusSurvey from './components/BonusSurvey'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
+import { GROUP } from './app/const'
 
 Amplify.configure(awsmobile)
 PubSub.configure(awsmobile)
@@ -63,10 +68,13 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
     const classes = useStyles()
 
+    const bingo = useSelector(selectBingo)
+    const ranking = useSelector(selectRanking)
     const progress = useSelector(selectProgress) //プログレスバー割合
     const drawer = useSelector(selectDrawer) //サイドメニューフラグ
 
     const dispatch = useDispatch()
+    const location = useLocation()
 
     const getPosts = async (nextToken = null) => {
         const res = await API.graphql(
@@ -98,6 +106,14 @@ const App = () => {
     }
 
     useEffect(() => {
+        const path = location.pathname
+        if ([GROUP.A2, GROUP.B2].includes(path)) {
+            dispatch(setBingo(true))
+        } else if (['/', GROUP.A3, GROUP.B3].includes(path)) {
+            dispatch(setBingo(true))
+            dispatch(setRanking(true))
+        }
+
         getPosts()
         document.addEventListener('scroll', () =>
             dispatch(calculateScrollRate())
@@ -106,6 +122,16 @@ const App = () => {
 
     return (
         <div className={classes.root}>
+            <Switch>
+                <Route exact path="/" />
+                <Route exact path={GROUP.A1} />
+                <Route exact path={GROUP.A2} />
+                <Route exact path={GROUP.A3} />
+                <Route exact path={GROUP.B1} />
+                <Route exact path={GROUP.B2} />
+                <Route exact path={GROUP.B3} />
+                <Redirect path="*" to="/" />
+            </Switch>
             <CssBaseline />
             <Container className={classes.container} maxWidth="xs">
                 <LinearProgress
@@ -113,27 +139,35 @@ const App = () => {
                     value={progress}
                     className={classes.progressBar}
                 />
-                <Fab
-                    className={classes.fab}
-                    onClick={() => dispatch(setDrawer(true))}
-                >
-                    <MenuIcon />
-                </Fab>
-                <Drawer
-                    anchor="left"
-                    open={drawer}
-                    onClose={() => dispatch(setDrawer(false))}
-                >
-                    <Menu />
-                </Drawer>
+                {bingo && (
+                    <>
+                        <Fab
+                            className={classes.fab}
+                            onClick={() => dispatch(setDrawer(true))}
+                        >
+                            <MenuIcon />
+                        </Fab>
+                        <Drawer
+                            anchor="left"
+                            open={drawer}
+                            onClose={() => dispatch(setDrawer(false))}
+                        >
+                            <Menu />
+                        </Drawer>
+                    </>
+                )}
 
                 <ExperimentSurvey />
                 <EvaluationSurvey />
                 <BonusSurvey />
                 <SlotModal />
 
-                <NoticeSnackbar type={NOTICE.RANK} />
-                <NoticeSnackbar type={NOTICE.BINGO} />
+                {ranking && (
+                    <>
+                        <NoticeSnackbar type={NOTICE.RANK} />
+                        <NoticeSnackbar type={NOTICE.BINGO} />
+                    </>
+                )}
                 <DoneDialog />
             </Container>
         </div>

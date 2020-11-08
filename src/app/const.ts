@@ -37,3 +37,12 @@ export const DIALOG = {
         DESCRIPTION: 'うにょん',
     },
 }
+
+export const GROUP = {
+    A1: '/a-1',
+    A2: '/a-2',
+    A3: '/a-3',
+    B1: '/b-1',
+    B2: '/b-2',
+    B3: '/b-3',
+}

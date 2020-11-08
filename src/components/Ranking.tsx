@@ -12,6 +12,7 @@ import {
 import { blue, pink } from '@material-ui/core/colors'
 import { selectRankers } from '../features/user/userSlice'
 import { useSelector } from 'react-redux'
+import { selectRanking } from '../features/system/systemSlice'
 
 const useStyles = makeStyles((theme) => ({
     rankingTitle: {
@@ -47,48 +48,54 @@ const useStyles = makeStyles((theme) => ({
 const Ranking = () => {
     const classes = useStyles()
     const rankers = useSelector(selectRankers)
+    const ranking = useSelector(selectRanking)
 
     return (
         <>
-            <Typography variant="h6" className={classes.rankingTitle}>
-                ランキング
-            </Typography>
+            {ranking && (
+                <Typography variant="h6" className={classes.rankingTitle}>
+                    ランキング
+                </Typography>
+            )}
             <List className={classes.ranking}>
-                {rankers.map((ranker, index) => (
-                    <Paper
-                        elevation={4}
-                        key={index}
-                        className={clsx(
-                            classes.paper,
-                            ranker.iam && classes.paperIam
-                        )}
-                    >
-                        <Grid container justify="center">
-                            <ListItemAvatar>
-                                <Avatar className={classes.avater}>
-                                    {index + 1}
-                                </Avatar>
-                            </ListItemAvatar>
-                            <Grid item xs={8}>
-                                <Typography
-                                    noWrap
-                                    className={classes.rankerName}
-                                >
-                                    {ranker.name}({ranker.from})
-                                </Typography>
-                                <Grid container justify="space-between">
+                {ranking &&
+                    rankers.map((ranker, index) => (
+                        <Paper
+                            elevation={4}
+                            key={index}
+                            className={clsx(
+                                classes.paper,
+                                ranker.iam && classes.paperIam
+                            )}
+                        >
+                            <Grid container justify="center">
+                                <ListItemAvatar>
+                                    <Avatar className={classes.avater}>
+                                        {index + 1}
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <Grid item xs={8}>
                                     <Typography
-                                        className={classes.numberOfBingo}
+                                        noWrap
+                                        className={classes.rankerName}
                                     >
-                                        {ranker.numberOfBingo}
-                                        {' BINGO'}
+                                        {ranker.name}({ranker.from})
                                     </Typography>
-                                    <Typography>{ranker.score}点</Typography>
+                                    <Grid container justify="space-between">
+                                        <Typography
+                                            className={classes.numberOfBingo}
+                                        >
+                                            {ranker.numberOfBingo}
+                                            {' BINGO'}
+                                        </Typography>
+                                        <Typography>
+                                            {ranker.score}点
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </Paper>
-                ))}
+                        </Paper>
+                    ))}
             </List>
         </>
     )

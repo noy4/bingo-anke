@@ -59,7 +59,6 @@ const EvaluationSurvey = () => {
             onPost={onPost}
             loading={loading}
             success={success}
-            bingo={false}
         />
     ) : null
 }

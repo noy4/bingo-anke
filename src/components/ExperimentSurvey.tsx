@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { EXPERIMENT } from '../app/const'
 import { questions, title } from '../app/questions'
-import { setDoneDialog, setEvaluation } from '../features/system/systemSlice'
+import {
+    selectBingo,
+    setDoneDialog,
+    setEvaluation,
+} from '../features/system/systemSlice'
 import {
     selectAnswers,
     selectBingoCount,
@@ -20,6 +24,7 @@ const ExperimentSurvey = () => {
     const answers = useSelector(selectAnswers)
     const score = useSelector(selectScore)
     const bingoCount = useSelector(selectBingoCount)
+    const bingo = useSelector(selectBingo)
 
     const onPost = async () => {
         setLoading(true)
@@ -55,6 +60,7 @@ const ExperimentSurvey = () => {
             onPost={onPost}
             loading={loading}
             success={success}
+            bingo={bingo}
         />
     )
 }

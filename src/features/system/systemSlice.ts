@@ -11,6 +11,8 @@ export interface SystemState {
     doneDialog: boolean
     rankNotice: boolean
     bingoNotice: boolean
+    bingo: boolean
+    ranking: boolean
 }
 
 interface State {
@@ -27,6 +29,8 @@ export const initialState: SystemState = {
     doneDialog: true, // 完了ダイアログ
     rankNotice: false, // 順位上昇通知
     bingoNotice: false, // ビンゴ通知
+    bingo: false,
+    ranking: false,
 }
 
 export const systemSlice = createSlice({
@@ -68,6 +72,12 @@ export const systemSlice = createSlice({
         setBingoNotice: (state, action) => {
             state.bingoNotice = action.payload
         },
+        setBingo: (state, action) => {
+            state.bingo = action.payload
+        },
+        setRanking: (state, action) => {
+            state.ranking = action.payload
+        },
     },
 })
 
@@ -77,10 +87,12 @@ export const {
     setModal,
     setEvaluation,
     setBonus,
+    setStep,
     setDoneDialog,
     setRankNotice,
     setBingoNotice,
-    setStep,
+    setBingo,
+    setRanking,
 } = systemSlice.actions
 
 export const selectProgress = (state: State) => state.system.progress
@@ -92,5 +104,7 @@ export const selectStep = (state: State) => state.system.step
 export const selectDoneDialog = (state: State) => state.system.doneDialog
 export const selectRankNotice = (state: State) => state.system.rankNotice
 export const selectBingoNotice = (state: State) => state.system.bingoNotice
+export const selectBingo = (state: State) => state.system.bingo
+export const selectRanking = (state: State) => state.system.ranking
 
 export default systemSlice.reducer
