@@ -1,10 +1,12 @@
-export const NAME = 'name'
-export const DISPLAY_NAME = 'displayName'
-export const FROM = 'from'
-export const SEX = 'sex'
-export const FIVE_POINT = 'fivePoint'
-export const TEXTAREA = 'textarea'
-export const NUMBER = 'number'
+import {
+    DISPLAY_NAME,
+    FIVE_POINT,
+    FROM,
+    NAME,
+    NUMBER,
+    SEX,
+    TEXTAREA,
+} from './const'
 
 export const title = 'アンケートについてのアンケート'
 

@@ -15,11 +15,18 @@ export interface Ranker {
     score: number
 }
 
+interface Answer {
+    [key: string]: string
+}
+
 export interface UserState {
     bingoCount: number
     score: number
     answers: {
-        [key: string]: string
+        experiment: Answer
+        evaluation: Answer
+        bonus: Answer
+        [key: string]: Answer
     }
     rankInfo: {
         prev: number
@@ -30,6 +37,7 @@ export interface UserState {
     bingoCard: Square[]
     balls: number[]
     rankers: Ranker[]
+    userId: string
 }
 
 interface State {
@@ -52,7 +60,12 @@ export const initialState: UserState = {
         prev: 0,
         current: 0,
     },
-    answers: {}, // 回答
+    answers: {
+        experiment: {},
+        evaluation: {},
+        bonus: {},
+    }, // 回答
+    userId: '',
 }
 
 export const userSlice = createSlice({
@@ -66,7 +79,8 @@ export const userSlice = createSlice({
             state.score = action.payload
         },
         setAnswers: (state, action) => {
-            state.answers = { ...state.answers, ...action.payload }
+            const { key, value } = action.payload
+            state.answers[key] = { ...state.answers[key], ...value }
         },
         updateRankingCard: (state, action) => {
             const index = state.rankers.findIndex((ranker) => ranker.iam)
@@ -77,14 +91,14 @@ export const userSlice = createSlice({
                 case 'familyName':
                     if (!value) {
                         state.rankers[index].name = 'あなた'
-                    } else if (!state.answers.displayName) {
+                    } else if (!state.answers.experiment.displayName) {
                         state.rankers[index].name = value
                     }
                     break
                 case 'displayName':
                     if (!value) {
                         state.rankers[index].name =
-                            state.answers.familyName || 'あなた'
+                            state.answers.experiment.familyName || 'あなた'
                     } else {
                         state.rankers[index].name = value
                     }
@@ -126,8 +140,8 @@ export const userSlice = createSlice({
                 newRanker.numberOfBingo = action.payload.updatedNumberOfBingo
                 newRanker.score = action.payload.updatedScore
                 newRanker.name =
-                    state.answers.displayName ||
-                    state.answers.familyName ||
+                    state.answers.experiment.displayName ||
+                    state.answers.experiment.familyName ||
                     'あなた'
             }
 
@@ -137,6 +151,9 @@ export const userSlice = createSlice({
 
             const currentIndex = newRankers.findIndex((ranker) => ranker.iam)
             state.rankInfo = { prev: prevIndex + 1, current: currentIndex + 1 }
+        },
+        setUserId: (state, action) => {
+            state.userId = action.payload
         },
     },
 })
@@ -153,6 +170,7 @@ export const {
     setRankers,
     setRankInfo,
     handleRankers,
+    setUserId,
 } = userSlice.actions
 
 export const selectBingoCount = (state: State) => state.user.bingoCount
@@ -164,5 +182,6 @@ export const selectBingoCard = (state: State) => state.user.bingoCard
 export const selectBalls = (state: State) => state.user.balls
 export const selectRankers = (state: State) => state.user.rankers
 export const selectRankInfo = (state: State) => state.user.rankInfo
+export const selectUserId = (state: State) => state.user.userId
 
 export default userSlice.reducer

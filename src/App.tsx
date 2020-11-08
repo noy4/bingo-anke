@@ -29,6 +29,9 @@ import {
     calculateScrollRate,
 } from './features/system/systemSlice'
 import NoticeSnackbar, { NOTICE } from './components/NoticeSnackbar'
+import ExperimentSurvey from './components/ExperimentSurvey'
+import EvaluationSurvey from './components/EvaluationSurvey'
+import BonusSurvey from './components/BonusSurvey'
 
 Amplify.configure(awsmobile)
 PubSub.configure(awsmobile)
@@ -36,7 +39,9 @@ PubSub.configure(awsmobile)
 const useStyles = makeStyles((theme) => ({
     root: {
         background: pink[100],
-        padding: theme.spacing(2, 2, 20),
+    },
+    container: {
+        padding: theme.spacing(2, 2, 10),
     },
     progressBar: {
         position: 'fixed',
@@ -100,34 +105,38 @@ const App = () => {
     }, [])
 
     return (
-        <Container className={classes.root} maxWidth="xs">
+        <div className={classes.root}>
             <CssBaseline />
-            <LinearProgress
-                variant="determinate"
-                value={progress}
-                className={classes.progressBar}
-            />
-            <Fab
-                className={classes.fab}
-                onClick={() => dispatch(setDrawer(true))}
-            >
-                <MenuIcon />
-            </Fab>
-            <Drawer
-                anchor="left"
-                open={drawer}
-                onClose={() => dispatch(setDrawer(false))}
-            >
-                <Menu />
-            </Drawer>
+            <Container className={classes.container} maxWidth="xs">
+                <LinearProgress
+                    variant="determinate"
+                    value={progress}
+                    className={classes.progressBar}
+                />
+                <Fab
+                    className={classes.fab}
+                    onClick={() => dispatch(setDrawer(true))}
+                >
+                    <MenuIcon />
+                </Fab>
+                <Drawer
+                    anchor="left"
+                    open={drawer}
+                    onClose={() => dispatch(setDrawer(false))}
+                >
+                    <Menu />
+                </Drawer>
 
-            <Survey />
-            <SlotModal />
+                <ExperimentSurvey />
+                <EvaluationSurvey />
+                <BonusSurvey />
+                <SlotModal />
 
-            <NoticeSnackbar type={NOTICE.RANK} />
-            <NoticeSnackbar type={NOTICE.BINGO} />
-            <DoneDialog />
-        </Container>
+                <NoticeSnackbar type={NOTICE.RANK} />
+                <NoticeSnackbar type={NOTICE.BINGO} />
+                <DoneDialog />
+            </Container>
+        </div>
     )
 }
 

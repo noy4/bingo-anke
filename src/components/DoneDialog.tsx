@@ -9,40 +9,88 @@ import {
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    BONUS,
+    DIALOG,
+    EVALUATION,
+    EXPERIMENT,
+    INTRODUCTION,
+} from '../app/const'
+import {
     selectDoneDialog,
+    selectStep,
     setDoneDialog,
-    setDrawer,
+    setStep,
 } from '../features/system/systemSlice'
 
 const DoneDialog = () => {
-    const doneDialog = useSelector(selectDoneDialog)
     const dispatch = useDispatch()
+    const step = useSelector(selectStep)
+    const doneDialog = useSelector(selectDoneDialog)
+
+    let title
+    let description
+    let onClose
+    let onClick
+    let actions = true
+    switch (step) {
+        case INTRODUCTION:
+            title = DIALOG.INTRODUCTION.TITLE
+            description = DIALOG.INTRODUCTION.DESCRIPTION
+            onClick = () => {
+                dispatch(setDoneDialog(false))
+                dispatch(setStep(EXPERIMENT))
+            }
+            break
+        case EXPERIMENT:
+            title = DIALOG.EXPERIMENT.TITLE
+            description = DIALOG.EXPERIMENT.DESCRIPTION
+            onClick = () => {
+                dispatch(setDoneDialog(false))
+                dispatch(setStep(EVALUATION))
+            }
+            break
+        case EVALUATION:
+            title = DIALOG.EVALUATION.TITLE
+            description = DIALOG.EVALUATION.DESCRIPTION
+            actions = false
+            onClose = () => {
+                dispatch(setDoneDialog(false))
+                dispatch(setStep(BONUS))
+            }
+            break
+        case BONUS:
+            title = DIALOG.BONUS.TITLE
+            description = DIALOG.BONUS.DESCRIPTION
+            actions = false
+            onClose = () => {
+                dispatch(setDoneDialog(false))
+            }
+            break
+
+        default:
+            break
+    }
+
     return (
         <Dialog
             open={doneDialog}
             aria-labelledby="submit-dialog-title"
             aria-describedby="submit-dialog-description"
-            onClose={() => dispatch(setDoneDialog(false))}
+            onClose={onClose}
         >
-            <DialogTitle id="submit-dialog-title">
-                回答を送信しました。
-            </DialogTitle>
+            <DialogTitle id="submit-dialog-title">{title}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="submit-dialog-description">
-                    ご協力ありがとうございます。( ᐛ)
+                    {description}
                 </DialogContentText>
             </DialogContent>
-            <DialogActions>
-                <Button
-                    onClick={() => {
-                        dispatch(setDoneDialog(false))
-                        dispatch(setDrawer(true))
-                    }}
-                    color="primary"
-                >
-                    ランキングを見る
-                </Button>
-            </DialogActions>
+            {actions && (
+                <DialogActions>
+                    <Button onClick={onClick} color="primary">
+                        進む
+                    </Button>
+                </DialogActions>
+            )}
         </Dialog>
     )
 }
