@@ -6,12 +6,16 @@ export const onCreatePost = /* GraphQL */ `
     onCreatePost {
       type
       id
+      group
       contents
       displayName
       from
-      numberOfBingo
+      bingoCount
       score
-      timestamp
+      startTime
+      experimentEndTime
+      evaluationEndTime
+      bonusEndTime
     }
   }
 `;
@@ -20,12 +24,16 @@ export const onUpdatePost = /* GraphQL */ `
     onUpdatePost {
       type
       id
+      group
       contents
       displayName
       from
-      numberOfBingo
+      bingoCount
       score
-      timestamp
+      startTime
+      experimentEndTime
+      evaluationEndTime
+      bonusEndTime
     }
   }
 `;
@@ -34,12 +42,16 @@ export const onDeletePost = /* GraphQL */ `
     onDeletePost {
       type
       id
+      group
       contents
       displayName
       from
-      numberOfBingo
+      bingoCount
       score
-      timestamp
+      startTime
+      experimentEndTime
+      evaluationEndTime
+      bonusEndTime
     }
   }
 `;

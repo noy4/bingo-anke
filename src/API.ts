@@ -5,22 +5,30 @@
 export type CreatePostInput = {
   type: string,
   id?: string | null,
+  group?: string | null,
   contents: string,
   displayName: string,
   from: string,
-  numberOfBingo: number,
+  bingoCount: number,
   score: number,
-  timestamp: number,
+  startTime?: number | null,
+  experimentEndTime?: number | null,
+  evaluationEndTime?: number | null,
+  bonusEndTime?: number | null,
 };
 
 export type ModelPostConditionInput = {
   type?: ModelStringInput | null,
+  group?: ModelStringInput | null,
   contents?: ModelStringInput | null,
   displayName?: ModelStringInput | null,
   from?: ModelStringInput | null,
-  numberOfBingo?: ModelIntInput | null,
+  bingoCount?: ModelIntInput | null,
   score?: ModelIntInput | null,
-  timestamp?: ModelIntInput | null,
+  startTime?: ModelIntInput | null,
+  experimentEndTime?: ModelIntInput | null,
+  evaluationEndTime?: ModelIntInput | null,
+  bonusEndTime?: ModelIntInput | null,
   and?: Array< ModelPostConditionInput | null > | null,
   or?: Array< ModelPostConditionInput | null > | null,
   not?: ModelPostConditionInput | null,
@@ -81,12 +89,16 @@ export type ModelIntInput = {
 export type UpdatePostInput = {
   type?: string | null,
   id: string,
+  group?: string | null,
   contents?: string | null,
   displayName?: string | null,
   from?: string | null,
-  numberOfBingo?: number | null,
+  bingoCount?: number | null,
   score?: number | null,
-  timestamp?: number | null,
+  startTime?: number | null,
+  experimentEndTime?: number | null,
+  evaluationEndTime?: number | null,
+  bonusEndTime?: number | null,
 };
 
 export type DeletePostInput = {
@@ -96,12 +108,16 @@ export type DeletePostInput = {
 export type ModelPostFilterInput = {
   type?: ModelStringInput | null,
   id?: ModelIDInput | null,
+  group?: ModelStringInput | null,
   contents?: ModelStringInput | null,
   displayName?: ModelStringInput | null,
   from?: ModelStringInput | null,
-  numberOfBingo?: ModelIntInput | null,
+  bingoCount?: ModelIntInput | null,
   score?: ModelIntInput | null,
-  timestamp?: ModelIntInput | null,
+  startTime?: ModelIntInput | null,
+  experimentEndTime?: ModelIntInput | null,
+  evaluationEndTime?: ModelIntInput | null,
+  bonusEndTime?: ModelIntInput | null,
   and?: Array< ModelPostFilterInput | null > | null,
   or?: Array< ModelPostFilterInput | null > | null,
   not?: ModelPostFilterInput | null,
@@ -123,13 +139,19 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
-export type ModelIntKeyConditionInput = {
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
+export type ModelPostSortByBingoCountAndScoreCompositeKeyConditionInput = {
+  eq?: ModelPostSortByBingoCountAndScoreCompositeKeyInput | null,
+  le?: ModelPostSortByBingoCountAndScoreCompositeKeyInput | null,
+  lt?: ModelPostSortByBingoCountAndScoreCompositeKeyInput | null,
+  ge?: ModelPostSortByBingoCountAndScoreCompositeKeyInput | null,
+  gt?: ModelPostSortByBingoCountAndScoreCompositeKeyInput | null,
+  between?: Array< ModelPostSortByBingoCountAndScoreCompositeKeyInput | null > | null,
+  beginsWith?: ModelPostSortByBingoCountAndScoreCompositeKeyInput | null,
+};
+
+export type ModelPostSortByBingoCountAndScoreCompositeKeyInput = {
+  bingoCount?: number | null,
+  score?: number | null,
 };
 
 export enum ModelSortDirection {
@@ -137,21 +159,6 @@ export enum ModelSortDirection {
   DESC = "DESC",
 }
 
-
-export type ModelPostSortByScoreCompositeKeyConditionInput = {
-  eq?: ModelPostSortByScoreCompositeKeyInput | null,
-  le?: ModelPostSortByScoreCompositeKeyInput | null,
-  lt?: ModelPostSortByScoreCompositeKeyInput | null,
-  ge?: ModelPostSortByScoreCompositeKeyInput | null,
-  gt?: ModelPostSortByScoreCompositeKeyInput | null,
-  between?: Array< ModelPostSortByScoreCompositeKeyInput | null > | null,
-  beginsWith?: ModelPostSortByScoreCompositeKeyInput | null,
-};
-
-export type ModelPostSortByScoreCompositeKeyInput = {
-  numberOfBingo?: number | null,
-  score?: number | null,
-};
 
 export type CreatePostMutationVariables = {
   input: CreatePostInput,
@@ -163,12 +170,16 @@ export type CreatePostMutation = {
     __typename: "Post",
     type: string,
     id: string | null,
+    group: string | null,
     contents: string,
     displayName: string,
     from: string,
-    numberOfBingo: number,
+    bingoCount: number,
     score: number,
-    timestamp: number,
+    startTime: number | null,
+    experimentEndTime: number | null,
+    evaluationEndTime: number | null,
+    bonusEndTime: number | null,
   } | null,
 };
 
@@ -182,12 +193,16 @@ export type UpdatePostMutation = {
     __typename: "Post",
     type: string,
     id: string | null,
+    group: string | null,
     contents: string,
     displayName: string,
     from: string,
-    numberOfBingo: number,
+    bingoCount: number,
     score: number,
-    timestamp: number,
+    startTime: number | null,
+    experimentEndTime: number | null,
+    evaluationEndTime: number | null,
+    bonusEndTime: number | null,
   } | null,
 };
 
@@ -201,12 +216,16 @@ export type DeletePostMutation = {
     __typename: "Post",
     type: string,
     id: string | null,
+    group: string | null,
     contents: string,
     displayName: string,
     from: string,
-    numberOfBingo: number,
+    bingoCount: number,
     score: number,
-    timestamp: number,
+    startTime: number | null,
+    experimentEndTime: number | null,
+    evaluationEndTime: number | null,
+    bonusEndTime: number | null,
   } | null,
 };
 
@@ -219,12 +238,16 @@ export type GetPostQuery = {
     __typename: "Post",
     type: string,
     id: string | null,
+    group: string | null,
     contents: string,
     displayName: string,
     from: string,
-    numberOfBingo: number,
+    bingoCount: number,
     score: number,
-    timestamp: number,
+    startTime: number | null,
+    experimentEndTime: number | null,
+    evaluationEndTime: number | null,
+    bonusEndTime: number | null,
   } | null,
 };
 
@@ -241,66 +264,47 @@ export type ListPostsQuery = {
       __typename: "Post",
       type: string,
       id: string | null,
+      group: string | null,
       contents: string,
       displayName: string,
       from: string,
-      numberOfBingo: number,
+      bingoCount: number,
       score: number,
-      timestamp: number,
+      startTime: number | null,
+      experimentEndTime: number | null,
+      evaluationEndTime: number | null,
+      bonusEndTime: number | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
 };
 
-export type ListPostsSortedByTimestampQueryVariables = {
+export type ListPostsSortedByBingoCountAndScoreQueryVariables = {
   type?: string | null,
-  timestamp?: ModelIntKeyConditionInput | null,
+  bingoCountScore?: ModelPostSortByBingoCountAndScoreCompositeKeyConditionInput | null,
   sortDirection?: ModelSortDirection | null,
   filter?: ModelPostFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListPostsSortedByTimestampQuery = {
-  listPostsSortedByTimestamp:  {
+export type ListPostsSortedByBingoCountAndScoreQuery = {
+  listPostsSortedByBingoCountAndScore:  {
     __typename: "ModelPostConnection",
     items:  Array< {
       __typename: "Post",
       type: string,
       id: string | null,
+      group: string | null,
       contents: string,
       displayName: string,
       from: string,
-      numberOfBingo: number,
+      bingoCount: number,
       score: number,
-      timestamp: number,
-    } | null > | null,
-    nextToken: string | null,
-  } | null,
-};
-
-export type ListPostsSortedByScoreQueryVariables = {
-  type?: string | null,
-  numberOfBingoScore?: ModelPostSortByScoreCompositeKeyConditionInput | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelPostFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListPostsSortedByScoreQuery = {
-  listPostsSortedByScore:  {
-    __typename: "ModelPostConnection",
-    items:  Array< {
-      __typename: "Post",
-      type: string,
-      id: string | null,
-      contents: string,
-      displayName: string,
-      from: string,
-      numberOfBingo: number,
-      score: number,
-      timestamp: number,
+      startTime: number | null,
+      experimentEndTime: number | null,
+      evaluationEndTime: number | null,
+      bonusEndTime: number | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -311,12 +315,16 @@ export type OnCreatePostSubscription = {
     __typename: "Post",
     type: string,
     id: string | null,
+    group: string | null,
     contents: string,
     displayName: string,
     from: string,
-    numberOfBingo: number,
+    bingoCount: number,
     score: number,
-    timestamp: number,
+    startTime: number | null,
+    experimentEndTime: number | null,
+    evaluationEndTime: number | null,
+    bonusEndTime: number | null,
   } | null,
 };
 
@@ -325,12 +333,16 @@ export type OnUpdatePostSubscription = {
     __typename: "Post",
     type: string,
     id: string | null,
+    group: string | null,
     contents: string,
     displayName: string,
     from: string,
-    numberOfBingo: number,
+    bingoCount: number,
     score: number,
-    timestamp: number,
+    startTime: number | null,
+    experimentEndTime: number | null,
+    evaluationEndTime: number | null,
+    bonusEndTime: number | null,
   } | null,
 };
 
@@ -339,11 +351,15 @@ export type OnDeletePostSubscription = {
     __typename: "Post",
     type: string,
     id: string | null,
+    group: string | null,
     contents: string,
     displayName: string,
     from: string,
-    numberOfBingo: number,
+    bingoCount: number,
     score: number,
-    timestamp: number,
+    startTime: number | null,
+    experimentEndTime: number | null,
+    evaluationEndTime: number | null,
+    bonusEndTime: number | null,
   } | null,
 };

@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         margin: '3px 0',
     },
-    numberOfBingo: {
+    bingoCount: {
         paddingLeft: '10px',
     },
 }))
@@ -83,9 +83,9 @@ const Ranking = () => {
                                     </Typography>
                                     <Grid container justify="space-between">
                                         <Typography
-                                            className={classes.numberOfBingo}
+                                            className={classes.bingoCount}
                                         >
-                                            {ranker.numberOfBingo}
+                                            {ranker.bingoCount}
                                             {' BINGO'}
                                         </Typography>
                                         <Typography>

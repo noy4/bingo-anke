@@ -1,21 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { EXPERIMENT } from '../app/const'
-import { questions, title } from '../app/questions'
+import { EXPERIMENT, GROUP, Question } from '../app/const'
+import { questionsA, titleA } from '../app/questions/questionsA'
 import {
     selectBingo,
     setDoneDialog,
+    setDrawer,
     setEvaluation,
 } from '../features/system/systemSlice'
 import {
     selectAnswers,
     selectBingoCount,
     selectScore,
+    selectStartTime,
     setUserId,
 } from '../features/user/userSlice'
 import Survey from './Survey'
 import { createPost } from '../graphql/mutations'
 import API, { graphqlOperation } from '@aws-amplify/api'
+import { questionsB, titleB } from '../app/questions/questionsB'
+import { selectGroup } from '../features/group/groupSlice'
 
 const ExperimentSurvey = () => {
     const [loading, setLoading] = useState(false)
@@ -25,32 +29,50 @@ const ExperimentSurvey = () => {
     const score = useSelector(selectScore)
     const bingoCount = useSelector(selectBingoCount)
     const bingo = useSelector(selectBingo)
+    const startTime = useSelector(selectStartTime)
+    const group = useSelector(selectGroup)
+    const [title, setTitle] = useState(titleA)
+    const [questions, setQuestions] = useState<Question[]>(questionsA)
 
     const onPost = async () => {
         setLoading(true)
+        const bingoCountAndScore = [GROUP.A2, GROUP.B2].includes(group)
+            ? { bingoCount: 0, score: 0 }
+            : { bingoCount, score }
         const { displayName, from } = answers[EXPERIMENT]
-        // const res = await API.graphql(
-        //     graphqlOperation(createPost, {
-        //         input: {
-        //             type: 'post',
-        //             contents: JSON.stringify(answers),
-        //             displayName: displayName || answers[EXPERIMENT].familyName,
-        //             from: from || '',
-        //             numberOfBingo: bingoCount,
-        //             score: score,
-        //             timestamp: Date.now(),
-        //         },
-        //     })
-        // )
-        // if (res.data.createPost) {
-        //     console.log(res.data.createPost)
-        //     dispatch(setUserId(res.data.createPost.id))
-        // }
+        const res = await API.graphql(
+            graphqlOperation(createPost, {
+                input: {
+                    type: 'post',
+                    group,
+                    contents: JSON.stringify(answers),
+                    displayName: displayName || answers[EXPERIMENT].familyName,
+                    from: from || '',
+                    ...bingoCountAndScore,
+                    startTime,
+                    experimentEndTime: Date.now(),
+                },
+            })
+        )
+        if (res.data.createPost) {
+            console.log(res.data.createPost)
+            dispatch(setUserId(res.data.createPost.id))
+        }
         setLoading(false)
         setSuccess(true)
+        if (![GROUP.A1, GROUP.B1].includes(group)) {
+            dispatch(setDrawer(true))
+        }
         dispatch(setDoneDialog(true))
         dispatch(setEvaluation(true))
     }
+
+    useEffect(() => {
+        if ([GROUP.B1, GROUP.B2, GROUP.B3].includes(group)) {
+            setTitle(titleB)
+            setQuestions(questionsB)
+        }
+    }, [group])
 
     return (
         <Survey

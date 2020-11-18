@@ -13,19 +13,30 @@ import {
     DIALOG,
     EVALUATION,
     EXPERIMENT,
+    GROUP,
     INTRODUCTION,
 } from '../app/const'
+import { selectGroup } from '../features/group/groupSlice'
 import {
     selectDoneDialog,
     selectStep,
     setDoneDialog,
     setStep,
 } from '../features/system/systemSlice'
+import {
+    resetBingoCard,
+    setBalls,
+    setBingoCount,
+    setNewIam,
+    setScore,
+    setStartTime,
+} from '../features/user/userSlice'
 
 const DoneDialog = () => {
     const dispatch = useDispatch()
     const step = useSelector(selectStep)
     const doneDialog = useSelector(selectDoneDialog)
+    const group = useSelector(selectGroup)
 
     let title
     let description
@@ -39,6 +50,7 @@ const DoneDialog = () => {
             onClick = () => {
                 dispatch(setDoneDialog(false))
                 dispatch(setStep(EXPERIMENT))
+                dispatch(setStartTime(Date.now()))
             }
             break
         case EXPERIMENT:
@@ -56,6 +68,19 @@ const DoneDialog = () => {
             onClose = () => {
                 dispatch(setDoneDialog(false))
                 dispatch(setStep(BONUS))
+                dispatch(resetBingoCard())
+                dispatch(
+                    setBalls(
+                        Array(75)
+                            .fill(0)
+                            .map((_, i) => i + 1)
+                    )
+                )
+                dispatch(setScore(0))
+                dispatch(setBingoCount(0))
+                if ([GROUP.A3, GROUP.B3].includes(group)) {
+                    dispatch(setNewIam())
+                }
             }
             break
         case BONUS:

@@ -9,12 +9,16 @@ export const createPost = /* GraphQL */ `
     createPost(input: $input, condition: $condition) {
       type
       id
+      group
       contents
       displayName
       from
-      numberOfBingo
+      bingoCount
       score
-      timestamp
+      startTime
+      experimentEndTime
+      evaluationEndTime
+      bonusEndTime
     }
   }
 `;
@@ -26,12 +30,16 @@ export const updatePost = /* GraphQL */ `
     updatePost(input: $input, condition: $condition) {
       type
       id
+      group
       contents
       displayName
       from
-      numberOfBingo
+      bingoCount
       score
-      timestamp
+      startTime
+      experimentEndTime
+      evaluationEndTime
+      bonusEndTime
     }
   }
 `;
@@ -43,12 +51,16 @@ export const deletePost = /* GraphQL */ `
     deletePost(input: $input, condition: $condition) {
       type
       id
+      group
       contents
       displayName
       from
-      numberOfBingo
+      bingoCount
       score
-      timestamp
+      startTime
+      experimentEndTime
+      evaluationEndTime
+      bonusEndTime
     }
   }
 `;

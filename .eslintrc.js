@@ -43,6 +43,7 @@ module.exports = {
             {
                 objects: 'always-multiline',
                 imports: 'always-multiline',
+                arrays: 'always-multiline',
             },
         ],
         'no-unused-vars': 'off',

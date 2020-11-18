@@ -11,7 +11,7 @@ export interface Ranker {
     rank: number
     name: string
     from: string
-    numberOfBingo: number
+    bingoCount: number
     score: number
 }
 
@@ -38,6 +38,7 @@ export interface UserState {
     balls: number[]
     rankers: Ranker[]
     userId: string
+    startTime: number
 }
 
 interface State {
@@ -66,6 +67,7 @@ export const initialState: UserState = {
         bonus: {},
     }, // 回答
     userId: '',
+    startTime: 0,
 }
 
 export const userSlice = createSlice({
@@ -85,7 +87,6 @@ export const userSlice = createSlice({
         updateRankingCard: (state, action) => {
             const index = state.rankers.findIndex((ranker) => ranker.iam)
             const { key, value } = action.payload
-            console.log(key, value)
 
             switch (key) {
                 case 'familyName':
@@ -123,8 +124,11 @@ export const userSlice = createSlice({
                 ...action.payload,
             }
         },
-        setBingoCard: (state, action) => {
+        setSquareTrue: (state, action) => {
             state.bingoCard[action.payload].isValid = true
+        },
+        resetBingoCard: (state) => {
+            state.bingoCard = makeBingoCard()
         },
         setBalls: (state, action) => {
             state.balls = action.payload
@@ -137,7 +141,7 @@ export const userSlice = createSlice({
             const prevIndex = newRankers.findIndex((ranker) => ranker.iam)
             const newRanker = newRankers[prevIndex]
             if (newRanker !== undefined) {
-                newRanker.numberOfBingo = action.payload.updatedNumberOfBingo
+                newRanker.bingoCount = action.payload.updatedBingoCount
                 newRanker.score = action.payload.updatedScore
                 newRanker.name =
                     state.answers.experiment.displayName ||
@@ -146,7 +150,7 @@ export const userSlice = createSlice({
             }
 
             newRankers.sort((a, b) => b.score - a.score)
-            newRankers.sort((a, b) => b.numberOfBingo - a.numberOfBingo)
+            newRankers.sort((a, b) => b.bingoCount - a.bingoCount)
             state.rankers = newRankers
 
             const currentIndex = newRankers.findIndex((ranker) => ranker.iam)
@@ -154,6 +158,23 @@ export const userSlice = createSlice({
         },
         setUserId: (state, action) => {
             state.userId = action.payload
+        },
+        setStartTime: (state, action) => {
+            state.startTime = action.payload
+        },
+        setNewIam: (state) => {
+            const index = state.rankers.findIndex((ranker) => ranker.iam)
+            state.rankers[index].iam = false
+            state.rankers.push({
+                iam: true,
+                rank: 0,
+                name:
+                    state.answers.experiment.displayName ||
+                    state.answers.experiment.familyName,
+                from: state.answers.experiment.from || '',
+                bingoCount: 0,
+                score: 0,
+            })
         },
     },
 })
@@ -165,12 +186,15 @@ export const {
     updateRankingCard,
     setSlotCount,
     setSlotValues,
-    setBingoCard,
+    setSquareTrue,
+    resetBingoCard,
     setBalls,
     setRankers,
     setRankInfo,
     handleRankers,
     setUserId,
+    setStartTime,
+    setNewIam,
 } = userSlice.actions
 
 export const selectBingoCount = (state: State) => state.user.bingoCount
@@ -183,5 +207,6 @@ export const selectBalls = (state: State) => state.user.balls
 export const selectRankers = (state: State) => state.user.rankers
 export const selectRankInfo = (state: State) => state.user.rankInfo
 export const selectUserId = (state: State) => state.user.userId
+export const selectStartTime = (state: State) => state.user.startTime
 
 export default userSlice.reducer

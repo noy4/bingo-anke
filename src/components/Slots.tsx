@@ -43,9 +43,10 @@ const Slots = () => {
     for (let i = 0; i < slotCount; i++) {
         slots.push(
             <Avatar
+                //eslint-disable-next-line
                 className={eval(
                     'classes.slot' + (slotCount >= 5 ? 5 : slotCount)
-                )} //eslint-disable-line
+                )}
                 key={i}
             >
                 <Box component="h1">{slotValues[i]}</Box>

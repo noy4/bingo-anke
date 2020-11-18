@@ -26,6 +26,7 @@ import {
     FROM,
     NAME,
     NUMBER,
+    Question,
     SEX,
     Step,
     TEXTAREA,
@@ -73,11 +74,7 @@ const useStyles = makeStyles((theme) => ({
 interface SurveyProps {
     type: Step
     title: string
-    questions: {
-        id: string
-        slotCount: number
-        [key: string]: string | number | undefined
-    }[]
+    questions: Question[]
     onPost: () => void
     loading: boolean
     success: boolean
@@ -159,6 +156,7 @@ const Survey = (props: SurveyProps) => {
                             placeholder={`未入力で${
                                 answers[props.type].familyName?.trim() || '姓'
                             }になります`}
+                            helperText="公開されます*"
                             margin="normal"
                             fullWidth
                         />
@@ -181,8 +179,8 @@ const Survey = (props: SurveyProps) => {
                             name="from"
                             onChange={handleInputChange}
                             value={answers[props.type].from || ''}
-                            placeholder="例）九州大学"
-                            helperText="ランキングに載ります*"
+                            placeholder="例）愛媛大学"
+                            helperText="公開されます*"
                             margin="normal"
                             fullWidth
                         />
@@ -291,7 +289,7 @@ const Survey = (props: SurveyProps) => {
                             name={item.id}
                             type="number"
                             onChange={handleInputChange}
-                            value={answers[props.type][item.id]}
+                            value={answers[props.type][item.id] || ''}
                             placeholder="0"
                             InputProps={{
                                 endAdornment: (
@@ -316,6 +314,7 @@ const Survey = (props: SurveyProps) => {
                 )
                 break
             default:
+                break
         }
         return (
             <Paper className={classes.paper} key={index}>
@@ -334,7 +333,9 @@ const Survey = (props: SurveyProps) => {
         <>
             <Paper className={classes.titlePaper}>
                 <Typography variant="h5" className={classes.title}>
-                    {props.title}（全{props.questions.length}問）
+                    {props.title}（全
+                    {props.questions.filter((v) => v.type).length}
+                    問）
                 </Typography>
             </Paper>
             <form

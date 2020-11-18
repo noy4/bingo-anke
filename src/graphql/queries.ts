@@ -6,12 +6,16 @@ export const getPost = /* GraphQL */ `
     getPost(id: $id) {
       type
       id
+      group
       contents
       displayName
       from
-      numberOfBingo
+      bingoCount
       score
-      timestamp
+      startTime
+      experimentEndTime
+      evaluationEndTime
+      bonusEndTime
     }
   }
 `;
@@ -25,29 +29,33 @@ export const listPosts = /* GraphQL */ `
       items {
         type
         id
+        group
         contents
         displayName
         from
-        numberOfBingo
+        bingoCount
         score
-        timestamp
+        startTime
+        experimentEndTime
+        evaluationEndTime
+        bonusEndTime
       }
       nextToken
     }
   }
 `;
-export const listPostsSortedByTimestamp = /* GraphQL */ `
-  query ListPostsSortedByTimestamp(
+export const listPostsSortedByBingoCountAndScore = /* GraphQL */ `
+  query ListPostsSortedByBingoCountAndScore(
     $type: String
-    $timestamp: ModelIntKeyConditionInput
+    $bingoCountScore: ModelPostSortByBingoCountAndScoreCompositeKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelPostFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listPostsSortedByTimestamp(
+    listPostsSortedByBingoCountAndScore(
       type: $type
-      timestamp: $timestamp
+      bingoCountScore: $bingoCountScore
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit
@@ -56,43 +64,16 @@ export const listPostsSortedByTimestamp = /* GraphQL */ `
       items {
         type
         id
+        group
         contents
         displayName
         from
-        numberOfBingo
+        bingoCount
         score
-        timestamp
-      }
-      nextToken
-    }
-  }
-`;
-export const listPostsSortedByScore = /* GraphQL */ `
-  query ListPostsSortedByScore(
-    $type: String
-    $numberOfBingoScore: ModelPostSortByScoreCompositeKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPostsSortedByScore(
-      type: $type
-      numberOfBingoScore: $numberOfBingoScore
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        type
-        id
-        contents
-        displayName
-        from
-        numberOfBingo
-        score
-        timestamp
+        startTime
+        experimentEndTime
+        evaluationEndTime
+        bonusEndTime
       }
       nextToken
     }

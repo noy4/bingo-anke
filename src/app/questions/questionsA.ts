@@ -6,11 +6,11 @@ import {
     NUMBER,
     SEX,
     TEXTAREA,
-} from './const'
+} from '../const'
 
-export const title = 'アンケートについてのアンケート'
+export const titleA = 'アンケートについてのアンケート'
 
-export const questions = [
+export const questionsA = [
     {
         id: 'Q1',
         type: NAME,
@@ -20,7 +20,7 @@ export const questions = [
     {
         id: 'Q2',
         type: DISPLAY_NAME,
-        title: 'ランキング表示名',
+        title: '公開名',
         slotCount: 4,
     },
     {
@@ -33,43 +33,43 @@ export const questions = [
         id: 'Q4',
         type: SEX,
         title: '性別',
-        slotCount: 20,
+        slotCount: 4,
     },
     {
         id: 'Q5',
         type: FIVE_POINT,
         title: '大学の事務から依頼される調査アンケートに答えますか。',
-        negative: '全て答えない',
-        positive: '全て答える',
-        slotCount: 20,
+        negative: 'ほとんど答えない',
+        positive: 'よく答える',
+        slotCount: 4,
     },
     {
         id: 'Q6',
         type: FIVE_POINT,
         title: '友人から依頼される調査アンケートに答えますか。',
-        negative: '全て答えない',
-        positive: '全て答える',
-        slotCount: 20,
+        negative: 'ほとんど答えない',
+        positive: 'よく答える',
+        slotCount: 4,
     },
     {
         id: 'Q7',
         type: FIVE_POINT,
         title: '企業から依頼される調査アンケートに答えますか。',
-        negative: '全て答えない',
-        positive: '全て答える',
-        slotCount: 15,
+        negative: 'ほとんど答えない',
+        positive: 'よく答える',
+        slotCount: 4,
     },
     {
         id: 'Q8',
         type: TEXTAREA,
         title: 'どういう時に調査アンケートに答えますか。',
-        slotCount: 15,
+        slotCount: 4,
     },
     {
         id: 'Q9',
         type: TEXTAREA,
         title: 'どういう時に調査アンケートに答えないですか。',
-        slotCount: 15,
+        slotCount: 4,
     },
     {
         id: 'Q10',
@@ -106,44 +106,15 @@ export const questions = [
     },
     {
         id: 'Q14',
-        type: FIVE_POINT,
-        title:
-            '各設問回答後に抽選が行われ、ビンゴをプレイしながらアンケートに回答できると、回答者のモチベーションを向上させられるという仮説について、あなたはどう思いますか。',
-        negative: '有効だと思わない',
-        positive: '有効だと思う',
-        slotCount: 4,
-    },
-    {
-        id: 'Q15',
-        type: FIVE_POINT,
-        title:
-            'アンケートにゲームの要素を取り入れ、その最終スコアを他の回答者にも開示すると回答者のモチベーションを向上させられるという仮説について、あなたはどう思いますか。',
-        negative: '有効だと思わない',
-        positive: '有効だと思う',
-        slotCount: 4,
-    },
-    {
-        id: 'Q16',
-        type: FIVE_POINT,
-        title:
-            'ゲームのスコアが匿名（または任意のニックネーム）で開示されることに抵抗はありますか',
-        negative: '抵抗がない',
-        positive: '抵抗がある',
-        slotCount: 4,
-    },
-    {
-        id: 'Q17',
         type: TEXTAREA,
         title: '一般的な調査アンケートに対する不満はありますか。',
         slotCount: 4,
     },
     {
-        id: 'Q18',
+        id: 'Q15',
         type: TEXTAREA,
         title:
             'その他一般的な調査アンケートについて、または以上回答への補足等何かありますか。',
         slotCount: 4,
     },
 ]
-
-export const questionsCount = questions.length

@@ -10,14 +10,20 @@ import {
     selectBingoCount,
     selectScore,
     setBalls,
-    setBingoCard,
+    setSquareTrue,
     setBingoCount,
     setScore,
     setSlotCount,
     setSlotValues,
 } from '../features/user/userSlice'
 import { checkBingo } from './Bingo'
-import { setModal, setBingoNotice } from '../features/system/systemSlice'
+import {
+    setModal,
+    setBingoNotice,
+    selectBonus,
+} from '../features/system/systemSlice'
+import { GROUP } from '../app/const'
+import { selectGroup } from '../features/group/groupSlice'
 
 export interface GalaponProps {
     galable?: boolean
@@ -31,6 +37,8 @@ export default function Galapon(props: GalaponProps) {
     const score = useSelector(selectScore)
     const bingoCard = useSelector(selectBingoCard)
     const bingoCount = useSelector(selectBingoCount)
+    const bonus = useSelector(selectBonus)
+    const group = useSelector(selectGroup)
 
     //ガラポンを回す
     async function galapon(slotCount: number = 1) {
@@ -68,7 +76,7 @@ export default function Galapon(props: GalaponProps) {
                     ...bingoCardSlice[squareIndex],
                     isValid: true,
                 }
-                dispatch(setBingoCard(squareIndex))
+                dispatch(setSquareTrue(squareIndex))
                 updatedScore += drawnBalls[i]
             }
         }
@@ -81,7 +89,10 @@ export default function Galapon(props: GalaponProps) {
         dispatch(setBingoCount(updatedBingoCount))
         dispatch(setScore(updatedScore))
         dispatch(setBalls(updatedBalls))
-        dispatch(handleRankers({ updatedBingoCount, updatedScore }))
+
+        if ([GROUP.A3, GROUP.B3].includes(group) || bonus) {
+            dispatch(handleRankers({ updatedBingoCount, updatedScore }))
+        }
     }
 
     //スロットに番号をセットする

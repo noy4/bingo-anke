@@ -1,14 +1,22 @@
 type Post
-  @model
-  @key(name: "SortByTimestamp", fields:["type", "timestamp"], queryField: "listPostsSortedByTimestamp")
-  @key(name: "SortByScore", fields:["type", "numberOfBingo", "score"], queryField: "listPostsSortedByScore")
-{
-  type: String!
-  id: ID
-  contents: AWSJSON!
-  displayName: String!
-  from: String!
-  numberOfBingo: Int!
-  score: Int!
-  timestamp: AWSTimestamp!
+    @model
+    @key(name: "SortByBingoCount", fields: ["type", "bingoCount"])
+    @key(name: "SortByScore", fields: ["type", "score"])
+    @key(
+        name: "SortByBingoCountAndScore"
+        fields: ["type", "bingoCount", "score"]
+        queryField: "listPostsSortedByBingoCountAndScore"
+    ) {
+    type: String!
+    id: ID
+    group: String
+    contents: AWSJSON!
+    displayName: String!
+    from: String!
+    bingoCount: Int!
+    score: Int!
+    startTime: AWSTimestamp
+    experimentEndTime: AWSTimestamp
+    evaluationEndTime: AWSTimestamp
+    bonusEndTime: AWSTimestamp
 }

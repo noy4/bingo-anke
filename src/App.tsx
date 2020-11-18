@@ -3,7 +3,7 @@ import Menu from './components/Menu'
 import DoneDialog from './components/DoneDialog'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { CreatePostInput } from './API'
-import { listPostsSortedByScore } from './graphql/queries'
+import { listPostsSortedByBingoCountAndScore } from './graphql/queries'
 import { makeStyles } from '@material-ui/core/styles'
 import {
     Container,
@@ -37,6 +37,7 @@ import EvaluationSurvey from './components/EvaluationSurvey'
 import BonusSurvey from './components/BonusSurvey'
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import { GROUP } from './app/const'
+import { setGroup } from './features/group/groupSlice'
 
 Amplify.configure(awsmobile)
 PubSub.configure(awsmobile)
@@ -78,28 +79,35 @@ const App = () => {
 
     const getPosts = async (nextToken = null) => {
         const res = await API.graphql(
-            graphqlOperation(listPostsSortedByScore, {
+            graphqlOperation(listPostsSortedByBingoCountAndScore, {
                 type: 'post',
                 sortDirection: 'DESC',
                 limit: 200,
                 nextToken: nextToken,
             })
         )
-        const newRankers = res.data.listPostsSortedByScore.items.map(
+        const newRankers = res.data.listPostsSortedByBingoCountAndScore.items.map(
             (post: CreatePostInput) => ({
                 rank: 0,
                 name: post.displayName,
                 from: post.from,
-                numberOfBingo: post.numberOfBingo,
+                bingoCount: post.bingoCount,
                 score: post.score,
             })
+        )
+        newRankers.sort(
+            (a: CreatePostInput, b: CreatePostInput) => b.score - a.score
+        )
+        newRankers.sort(
+            (a: CreatePostInput, b: CreatePostInput) =>
+                b.bingoCount - a.bingoCount
         )
         newRankers.push({
             iam: true,
             rank: 0,
             name: 'あなた',
             from: '',
-            numberOfBingo: 0,
+            bingoCount: 0,
             score: 0,
         })
         dispatch(setRankers(newRankers))
@@ -107,6 +115,7 @@ const App = () => {
 
     useEffect(() => {
         const path = location.pathname
+        dispatch(setGroup(path))
         if ([GROUP.A2, GROUP.B2].includes(path)) {
             dispatch(setBingo(true))
         } else if (['/', GROUP.A3, GROUP.B3].includes(path)) {
@@ -118,7 +127,7 @@ const App = () => {
         document.addEventListener('scroll', () =>
             dispatch(calculateScrollRate())
         )
-    }, [])
+    }, [dispatch, location.pathname])
 
     return (
         <div className={classes.root}>
@@ -162,12 +171,8 @@ const App = () => {
                 <BonusSurvey />
                 <SlotModal />
 
-                {ranking && (
-                    <>
-                        <NoticeSnackbar type={NOTICE.RANK} />
-                        <NoticeSnackbar type={NOTICE.BINGO} />
-                    </>
-                )}
+                <NoticeSnackbar type={NOTICE.BINGO} />
+                {ranking && <NoticeSnackbar type={NOTICE.RANK} />}
                 <DoneDialog />
             </Container>
         </div>
