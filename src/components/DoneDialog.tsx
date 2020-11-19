@@ -21,7 +21,6 @@ import {
     selectDoneDialog,
     selectStep,
     setDoneDialog,
-    setStep,
 } from '../features/system/systemSlice'
 import {
     resetBingoCard,
@@ -49,7 +48,6 @@ const DoneDialog = () => {
             description = DIALOG.INTRODUCTION.DESCRIPTION
             onClick = () => {
                 dispatch(setDoneDialog(false))
-                dispatch(setStep(EXPERIMENT))
                 dispatch(setStartTime(Date.now()))
             }
             break
@@ -58,7 +56,6 @@ const DoneDialog = () => {
             description = DIALOG.EXPERIMENT.DESCRIPTION
             onClick = () => {
                 dispatch(setDoneDialog(false))
-                dispatch(setStep(EVALUATION))
             }
             break
         case EVALUATION:
@@ -67,7 +64,6 @@ const DoneDialog = () => {
             actions = false
             onClose = () => {
                 dispatch(setDoneDialog(false))
-                dispatch(setStep(BONUS))
                 dispatch(resetBingoCard())
                 dispatch(
                     setBalls(

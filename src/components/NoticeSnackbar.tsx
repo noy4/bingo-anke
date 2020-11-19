@@ -10,17 +10,13 @@ import {
     setBingoNotice,
     setRankNotice,
 } from '../features/system/systemSlice'
+import { NOTICE } from '../app/const'
 
 const useStyles = makeStyles((theme) => ({
     snackBar: {
         width: '100%',
     },
 }))
-
-export const NOTICE = {
-    RANK: 0,
-    BINGO: 1,
-}
 
 interface NoticeProps {
     type: number

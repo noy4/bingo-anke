@@ -11,6 +11,7 @@ import {
     setBonus,
     setDoneDialog,
     setRanking,
+    setStep,
 } from '../features/system/systemSlice'
 import {
     selectAnswers,
@@ -49,6 +50,7 @@ const EvaluationSurvey = () => {
         }
         setLoading(false)
         setSuccess(true)
+        dispatch(setStep(EVALUATION))
         dispatch(setDoneDialog(true))
         dispatch(setBonus(true))
         dispatch(setBingo(true))

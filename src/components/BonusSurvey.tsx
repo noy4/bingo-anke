@@ -2,7 +2,12 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BONUS, GROUP } from '../app/const'
 import { bonusQuestions, bonusTitle } from '../app/questions/bonusQuestions'
-import { selectBonus, setDoneDialog } from '../features/system/systemSlice'
+import {
+    selectBonus,
+    setDoneDialog,
+    setDrawer,
+    setStep,
+} from '../features/system/systemSlice'
 import {
     selectAnswers,
     selectBingoCount,
@@ -49,6 +54,8 @@ const BonusSurvey = () => {
         }
         setLoading(false)
         setSuccess(true)
+        dispatch(setDrawer(true))
+        dispatch(setStep(BONUS))
         dispatch(setDoneDialog(true))
     }
     return bonus ? (

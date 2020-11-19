@@ -7,6 +7,7 @@ import {
     setDoneDialog,
     setDrawer,
     setEvaluation,
+    setStep,
 } from '../features/system/systemSlice'
 import {
     selectAnswers,
@@ -63,6 +64,7 @@ const ExperimentSurvey = () => {
         if (![GROUP.A1, GROUP.B1].includes(group)) {
             dispatch(setDrawer(true))
         }
+        dispatch(setStep(EXPERIMENT))
         dispatch(setDoneDialog(true))
         dispatch(setEvaluation(true))
     }

@@ -65,3 +65,8 @@ export interface Question {
     slotCount?: number
     unit?: string
 }
+
+export const NOTICE = {
+    RANK: 0,
+    BINGO: 1,
+}

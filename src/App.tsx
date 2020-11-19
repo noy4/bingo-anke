@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react'
-import Menu from './components/Menu'
-import DoneDialog from './components/DoneDialog'
+import { useDispatch, useSelector } from 'react-redux'
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
+
+import Amplify from '@aws-amplify/core'
+import PubSub from '@aws-amplify/pubsub'
+import awsmobile from './aws-exports'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { CreatePostInput } from './API'
 import { listPostsSortedByBingoCountAndScore } from './graphql/queries'
+
 import { makeStyles } from '@material-ui/core/styles'
+import { pink } from '@material-ui/core/colors'
 import {
     Container,
     CssBaseline,
@@ -14,13 +20,15 @@ import {
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 
-import Amplify from '@aws-amplify/core'
-import PubSub from '@aws-amplify/pubsub'
-import awsmobile from './aws-exports'
-import { pink } from '@material-ui/core/colors'
-import { useDispatch, useSelector } from 'react-redux'
-import { setRankers } from './features/user/userSlice'
+import Menu from './components/Menu'
+import DoneDialog from './components/DoneDialog'
 import SlotModal from './components/SlotModal'
+import NoticeSnackbar from './components/NoticeSnackbar'
+import ExperimentSurvey from './components/ExperimentSurvey'
+import EvaluationSurvey from './components/EvaluationSurvey'
+import BonusSurvey from './components/BonusSurvey'
+import { GROUP, NOTICE } from './app/const'
+
 import {
     selectDrawer,
     setDrawer,
@@ -31,12 +39,7 @@ import {
     selectRanking,
     setRanking,
 } from './features/system/systemSlice'
-import NoticeSnackbar, { NOTICE } from './components/NoticeSnackbar'
-import ExperimentSurvey from './components/ExperimentSurvey'
-import EvaluationSurvey from './components/EvaluationSurvey'
-import BonusSurvey from './components/BonusSurvey'
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
-import { GROUP } from './app/const'
+import { setRankers } from './features/user/userSlice'
 import { setGroup } from './features/group/groupSlice'
 
 Amplify.configure(awsmobile)

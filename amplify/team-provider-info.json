@@ -1,57 +1,44 @@
 {
-    "production": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-bingo-anke-production-13950-authRole",
-            "UnauthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-13950-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-13950-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-bingo-anke-production-13950-deployment",
-            "UnauthRoleName": "amplify-bingo-anke-production-13950-unauthRole",
-            "StackName": "amplify-bingo-anke-production-13950",
-            "StackId": "arn:aws:cloudformation:us-east-1:861065671172:stack/amplify-bingo-anke-production-13950/6fed9830-eadf-11ea-a72d-0e9711d18427",
-            "AmplifyAppId": "d3efwy5vjd8azj"
-        }
-    },
-    "staging": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-bingo-anke-staging-144606-authRole",
-            "UnauthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-staging-144606-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-staging-144606-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-bingo-anke-staging-144606-deployment",
-            "UnauthRoleName": "amplify-bingo-anke-staging-144606-unauthRole",
-            "StackName": "amplify-bingo-anke-staging-144606",
-            "StackId": "arn:aws:cloudformation:us-east-1:861065671172:stack/amplify-bingo-anke-staging-144606/445b9710-f004-11ea-a72d-0e9711d18427",
-            "AmplifyAppId": "d3efwy5vjd8azj"
-        },
-        "categories": {
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d3efwy5vjd8azj",
-                    "type": "manual"
-                }
-            }
-        }
-    },
-    "procon": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-bingo-anke-procon-02949-authRole",
-            "UnauthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-procon-02949-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-procon-02949-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-bingo-anke-procon-02949-deployment",
-            "UnauthRoleName": "amplify-bingo-anke-procon-02949-unauthRole",
-            "StackName": "amplify-bingo-anke-procon-02949",
-            "StackId": "arn:aws:cloudformation:us-east-1:861065671172:stack/amplify-bingo-anke-procon-02949/f8fb4f40-f5d5-11ea-845f-0ea3a6460f01",
-            "AmplifyAppId": "d3efwy5vjd8azj"
-        },
-        "categories": {
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d3efwy5vjd8azj",
-                    "type": "manual"
-                }
-            }
-        }
-    }
+	"production": {
+		"awscloudformation": {
+			"AuthRoleName": "amplify-bingo-anke-production-13950-authRole",
+			"UnauthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-13950-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-production-13950-authRole",
+			"Region": "us-east-1",
+			"DeploymentBucketName": "amplify-bingo-anke-production-13950-deployment",
+			"UnauthRoleName": "amplify-bingo-anke-production-13950-unauthRole",
+			"StackName": "amplify-bingo-anke-production-13950",
+			"StackId": "arn:aws:cloudformation:us-east-1:861065671172:stack/amplify-bingo-anke-production-13950/6fed9830-eadf-11ea-a72d-0e9711d18427",
+			"AmplifyAppId": "d3efwy5vjd8azj"
+		},
+		"categories": {
+			"hosting": {
+				"amplifyhosting": {
+					"appId": "d3efwy5vjd8azj",
+					"type": "manual"
+				}
+			}
+		}
+	},
+	"staging": {
+		"awscloudformation": {
+			"AuthRoleName": "amplify-bingo-anke-staging-144606-authRole",
+			"UnauthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-staging-144606-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::861065671172:role/amplify-bingo-anke-staging-144606-authRole",
+			"Region": "us-east-1",
+			"DeploymentBucketName": "amplify-bingo-anke-staging-144606-deployment",
+			"UnauthRoleName": "amplify-bingo-anke-staging-144606-unauthRole",
+			"StackName": "amplify-bingo-anke-staging-144606",
+			"StackId": "arn:aws:cloudformation:us-east-1:861065671172:stack/amplify-bingo-anke-staging-144606/445b9710-f004-11ea-a72d-0e9711d18427",
+			"AmplifyAppId": "d3efwy5vjd8azj"
+		},
+		"categories": {
+			"hosting": {
+				"amplifyhosting": {
+					"appId": "d3efwy5vjd8azj",
+					"type": "manual"
+				}
+			}
+		}
+	}
 }

@@ -1,6 +1,6 @@
 projects:
   BingoAnkeGql:
-    schemaPath: src/graphql/schema.json
+    schemaPath: amplify/backend/api/BingoAnkeGql/build/schema.graphql
     includes:
       - src/graphql/**/*.ts
     excludes:
