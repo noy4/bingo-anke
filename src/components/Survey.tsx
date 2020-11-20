@@ -156,7 +156,7 @@ const Survey = (props: SurveyProps) => {
                             placeholder={`未入力で${
                                 answers[props.type].familyName?.trim() || '姓'
                             }になります`}
-                            helperText="公開されます*"
+                            helperText="Web上で公開されます。パスワードなどの個人情報を書かないでください*"
                             margin="normal"
                             fullWidth
                         />
@@ -180,7 +180,7 @@ const Survey = (props: SurveyProps) => {
                             onChange={handleInputChange}
                             value={answers[props.type].from || ''}
                             placeholder="例）愛媛大学"
-                            helperText="公開されます*"
+                            helperText="Web上で公開されます。パスワードなどの個人情報を書かないでください*"
                             margin="normal"
                             fullWidth
                         />
