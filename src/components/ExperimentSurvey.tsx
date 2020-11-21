@@ -29,7 +29,7 @@ const ExperimentSurvey = () => {
     const answers = useSelector(selectAnswers)
     const score = useSelector(selectScore)
     const bingoCount = useSelector(selectBingoCount)
-    const bingo = useSelector(selectBingo)
+    const [bingo, setBingo] = useState(false)
     const startTime = useSelector(selectStartTime)
     const group = useSelector(selectGroup)
     const [title, setTitle] = useState(titleA)
@@ -73,6 +73,9 @@ const ExperimentSurvey = () => {
         if ([GROUP.B1, GROUP.B2, GROUP.B3].includes(group)) {
             setTitle(titleB)
             setQuestions(questionsB)
+        }
+        if (![GROUP.A1, GROUP.B1].includes(group)) {
+            setBingo(true)
         }
     }, [group])
 

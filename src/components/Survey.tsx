@@ -118,7 +118,7 @@ const Survey = (props: SurveyProps) => {
                     <>
                         <TextField
                             name="familyName"
-                            // required
+                            required
                             helperText="必須*"
                             onChange={handleInputChange}
                             value={answers[props.type].familyName || ''}
