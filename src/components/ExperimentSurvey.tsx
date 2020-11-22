@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { EXPERIMENT, GROUP, Question } from '../app/const'
 import { questionsA, titleA } from '../app/questions/questionsA'
 import {
-    selectBingo,
     setDoneDialog,
     setDrawer,
     setEvaluation,

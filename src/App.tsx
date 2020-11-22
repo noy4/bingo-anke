@@ -41,6 +41,7 @@ import {
 } from './features/system/systemSlice'
 import { setRankers } from './features/user/userSlice'
 import { setGroup } from './features/group/groupSlice'
+import Analytics from './components/Analytics'
 
 Amplify.configure(awsmobile)
 PubSub.configure(awsmobile)
@@ -134,6 +135,7 @@ const App = () => {
 
     return (
         <div className={classes.root}>
+            <CssBaseline />
             <Switch>
                 <Route exact path="/" />
                 <Route exact path={GROUP.A1} />
@@ -142,9 +144,9 @@ const App = () => {
                 <Route exact path={GROUP.B1} />
                 <Route exact path={GROUP.B2} />
                 <Route exact path={GROUP.B3} />
+                <Route exact path="/analytics" component={Analytics} />
                 <Redirect path="*" to="/" />
             </Switch>
-            <CssBaseline />
             <Container className={classes.container} maxWidth="xs">
                 <LinearProgress
                     variant="determinate"
