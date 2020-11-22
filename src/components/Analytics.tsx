@@ -5,8 +5,8 @@ import { Box } from '@material-ui/core'
 import { useDispatch } from 'react-redux'
 import { setDoneDialog } from '../features/system/systemSlice'
 import { listPostsSortedByBingoCountAndScore } from '../graphql/queries'
-import { ColDef, DataGrid, ValueGetterParams } from '@material-ui/data-grid'
 import moment from 'moment'
+import _ from 'lodash'
 import MaterialTable from 'material-table'
 import {
     AddBox,
@@ -25,63 +25,161 @@ import {
     Remove,
     ViewColumn,
 } from '@material-ui/icons'
+import { CreatePostInput } from '../API'
+import { questionsA } from '../app/questions/questionsA'
+import { questionsB } from '../app/questions/questionsB'
+import { evaluationQuestions } from '../app/questions/evaluationQuestions'
+import { GROUP, Question } from '../app/const'
+import { bonusQuestions } from '../app/questions/bonusQuestions'
 
 const formatTime = (time: number) => {
-    return moment(time).subtract(9, 'h').format('HH:mm:ss')
+    return moment(time).subtract(9, 'h').format('H:mm:ss')
 }
 
 const Analytics = () => {
     const dispatch = useDispatch()
     const [posts, setPosts] = useState([])
 
-    const getExperimentTime = (params: ValueGetterParams) => {
-        const experimentEndTime = params.getValue('experimentEndTime') as number
-        const startTime = params.getValue('startTime') as number
-        const experimentTime = experimentEndTime - startTime
-        return experimentTime
-    }
-    const getEvaluationTime = (params: ValueGetterParams) => {
-        const evaluationEndTime = params.getValue('evaluationEndTime') as number
-        const experimentEndTime = params.getValue('experimentEndTime') as number
-        const evaluationTime = evaluationEndTime - experimentEndTime
-        return evaluationTime < 0 ? 0 : evaluationTime
-    }
+    const getTitle = (type: string, id: number) => {
+        let questions: Question[] = questionsA
+        switch (type) {
+            case 'A':
+                questions = questionsA
+                break
+            case 'B':
+                questions = questionsB
+                break
+            case 'ev':
+                questions = evaluationQuestions
+                break
+            case 'bo':
+                questions = bonusQuestions
+                break
 
-    const columns: ColDef[] = [
-        { field: 'group', headerName: 'グループ', width: 100 },
-        { field: 'displayName', headerName: '公開名', width: 150 },
-        { field: 'from', headerName: '所属', width: 150 },
-        { field: 'bingoCount', headerName: 'ビンゴ数', width: 100 },
-        { field: 'score', headerName: 'スコア', width: 100 },
-        { field: 'contents', headerName: '回答', width: 200 },
+            default:
+                break
+        }
+        const q = questions.find((v) => v.id === 'Q' + id)
+        return (
+            `${type}-Q${id}. ${q?.title}` +
+            (q?.negative ? `(${q.negative}, ${q.positive})` : '')
+        )
+    }
+    const cell = (minWidth: number) => {
+        return {
+            cellStyle: {
+                minWidth,
+            },
+        }
+    }
+    const getQuestions = (type: string) => {
+        let count = 0
+        let offset = 0
+        switch (type) {
+            case 'A':
+            case 'B':
+                count = 11
+                offset = 5
+                break
+            case 'ev':
+                count = 11
+                offset = 1
+                break
+            case 'bo':
+                count = 7
+                offset = 1
+                break
+
+            default:
+                break
+        }
+        return [...Array(count)].map((_, i) => {
+            return {
+                title: getTitle(type, i + offset),
+                field: `${type}-Q${i + offset}`,
+                ...cell(300),
+            }
+        })
+    }
+    const columns = [
         {
+            title: 'グループ',
+            field: 'group',
+            defaultSort: 'asc' as const,
+            ...cell(150),
+        },
+        {
+            title: '名前',
+            field: 'name',
+            render: (rowData: any) => {
+                return rowData.familyName + (rowData.firstName || '')
+            },
+            ...cell(100),
+        },
+        { title: '公開名', field: 'displayName', ...cell(150) },
+        { title: '所属', field: 'from', ...cell(100) },
+        {
+            title: '性別',
+            field: 'sex',
+            lookup: { male: '男', female: '女' },
+            ...cell(100),
+        },
+        {
+            title: 'ビンゴ数',
+            field: 'bingoCount',
+            type: 'numeric' as const,
+            ...cell(150),
+        },
+        {
+            title: 'スコア',
+            field: 'score',
+            type: 'numeric' as const,
+            ...cell(150),
+        },
+        {
+            title: '実験開始時刻',
             field: 'experimentTime',
-            headerName: '実験アンケ時間',
-            width: 150,
-            type: 'number',
-            valueGetter: getExperimentTime,
-            sortComparator: (v1, v2, cellParams1, cellParams2) =>
-                getExperimentTime(cellParams1) - getExperimentTime(cellParams2),
-            valueFormatter: ({ value }) => formatTime(Number(value)),
+            type: 'numeric' as const,
+            render: (rowData: any) =>
+                moment(rowData.startTime).format('MM/DD HH:mm'),
+            ...cell(150),
+            customSort: (a: any, b: any) => a.startTime - b.startTime,
         },
         {
-            field: 'evaluationTime',
-            headerName: '評価アンケ時間',
-            width: 150,
-            type: 'number',
-            valueGetter: getEvaluationTime,
-            sortComparator: (v1, v2, cellParams1, cellParams2) =>
-                getEvaluationTime(cellParams1) - getEvaluationTime(cellParams2),
-            valueFormatter: ({ value }) => formatTime(Number(value)),
+            title: '実験時間',
+            field: 'experimentTime',
+            type: 'numeric' as const,
+            render: (rowData: any) =>
+                formatTime(
+                    Number(rowData.experimentEndTime) -
+                        Number(rowData.startTime)
+                ),
+            ...cell(150),
+            customSort: (a: any, b: any) =>
+                a.experimentEndTime -
+                a.startTime -
+                (b.experimentEndTime - b.startTime),
         },
-    ]
-    const columns2 = [
-        { title: 'グループ', field: 'group' },
-        { title: '公開名', field: 'displayName' },
-        { title: '所属', field: 'from' },
-        { title: 'ビンゴ数', field: 'bingoCount', type: 'numeric' as const },
-        { title: 'スコア', field: 'score', type: 'numeric' as const },
-        // { title: '回答', field: 'contents' },
+        {
+            title: '評価時間',
+            field: 'evaluationTime',
+            type: 'numeric' as const,
+            render: (rowData: any) => {
+                const time =
+                    Number(rowData.evaluationEndTime) -
+                    Number(rowData.experimentEndTime)
+                return formatTime(time < 0 ? 0 : time)
+            },
+            ...cell(150),
+            customSort: (a: any, b: any) =>
+                a.evaluationEndTime -
+                a.experimentEndTime -
+                (b.evaluationEndTime - b.experimentEndTime),
+        },
+        ...getQuestions('A'),
+        ...getQuestions('B'),
+        ...getQuestions('ev'),
+        ...getQuestions('bo'),
     ]
     const tableIcons = {
         Add: forwardRef<SVGSVGElement>((props, ref) => (
@@ -144,7 +242,71 @@ const Analytics = () => {
                 limit: 200,
             })
         )
-        setPosts(res.data.listPostsSortedByBingoCountAndScore.items)
+        const newPosts = res.data.listPostsSortedByBingoCountAndScore.items.map(
+            (post: CreatePostInput) => {
+                const contents = JSON.parse(post.contents)
+                const experiment = _.mapKeys(
+                    contents.experiment,
+                    (value, key) => {
+                        if (['familyName', 'firstName', 'sex'].includes(key)) {
+                            return key
+                        } else {
+                            return [GROUP.A1, GROUP.A2, GROUP.A3].includes(
+                                String(post.group)
+                            )
+                                ? `A-${key}`
+                                : `B-${key}`
+                        }
+                    }
+                )
+                const evaluation = _.mapKeys(
+                    contents.evaluation,
+                    (value, key) => `ev-${key}`
+                )
+                const bonus = _.mapKeys(
+                    contents.bonus,
+                    (value, key) => `bo-${key}`
+                )
+
+                return {
+                    ...post,
+                    ...experiment,
+                    ...evaluation,
+                    ...bonus,
+                }
+            }
+        )
+
+        const addTotal = (data: any, byColumn: any) => {
+            const keys = Object.keys(data[0])
+            console.log(keys)
+
+            const total = data.reduce((acc: any, el: any) => {
+                return (acc += el[byColumn])
+            }, 0)
+
+            const totalRow: {
+                [key: string]: string
+            } = {}
+            const emptyRow: {
+                [key: string]: string
+            } = {}
+            for (const key of keys) {
+                if (key === 'group') {
+                    totalRow[key] = 'Total'
+                    emptyRow[key] = '/z'
+                } else if (key === byColumn) {
+                    totalRow[key] = total
+                } else {
+                    // totalRow[key] = ''
+                }
+                // emptyRow[key] = ''
+            }
+            console.log(totalRow)
+            return [...data, emptyRow, totalRow]
+        }
+
+        setPosts(addTotal(newPosts, 'score') as never)
     }
 
     useEffect(() => {
@@ -153,14 +315,21 @@ const Analytics = () => {
     }, [dispatch])
 
     return (
-        <Box height="100vh" p={4}>
+        <Box p={4}>
             <MaterialTable
+                options={{
+                    exportButton: true,
+                    exportAllData: true,
+                    pageSize: 20,
+                    // doubleHorizontalScroll: true,
+                    maxBodyHeight: '78vh',
+                    columnsButton: true,
+                }}
                 icons={tableIcons}
-                columns={columns2}
+                columns={columns}
                 data={posts}
                 title="アンケデータ"
             />
-            <DataGrid rows={posts} columns={columns} />
         </Box>
     )
 }
