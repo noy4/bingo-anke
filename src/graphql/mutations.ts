@@ -19,6 +19,7 @@ export const createPost = /* GraphQL */ `
       experimentEndTime
       evaluationEndTime
       bonusEndTime
+      unusedGalapons
     }
   }
 `;
@@ -40,6 +41,7 @@ export const updatePost = /* GraphQL */ `
       experimentEndTime
       evaluationEndTime
       bonusEndTime
+      unusedGalapons
     }
   }
 `;
@@ -61,6 +63,7 @@ export const deletePost = /* GraphQL */ `
       experimentEndTime
       evaluationEndTime
       bonusEndTime
+      unusedGalapons
     }
   }
 `;

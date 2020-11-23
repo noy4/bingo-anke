@@ -13,6 +13,8 @@ import {
     selectBingoCount,
     selectScore,
     selectStartTime,
+    selectUnusedGalapons,
+    setUnusedGalapons,
     setUserId,
 } from '../features/user/userSlice'
 import Survey from './Survey'
@@ -31,6 +33,7 @@ const ExperimentSurvey = () => {
     const [bingo, setBingo] = useState(false)
     const startTime = useSelector(selectStartTime)
     const group = useSelector(selectGroup)
+    const unusedGalapons = useSelector(selectUnusedGalapons)
     const [title, setTitle] = useState(titleA)
     const [questions, setQuestions] = useState<Question[]>(questionsA)
 
@@ -51,6 +54,7 @@ const ExperimentSurvey = () => {
                     ...bingoCountAndScore,
                     startTime,
                     experimentEndTime: Date.now(),
+                    unusedGalapons: JSON.stringify(unusedGalapons),
                 },
             })
         )
@@ -75,8 +79,12 @@ const ExperimentSurvey = () => {
         }
         if (![GROUP.A1, GROUP.B1].includes(group)) {
             setBingo(true)
+            const galapons = questions.reduce((acc: any, el: any) => {
+                return el.id === '問' ? [...acc] : [...acc, el.id]
+            }, [])
+            dispatch(setUnusedGalapons(galapons))
         }
-    }, [group])
+    }, [group, dispatch, questions])
 
     return (
         <Survey

@@ -15,6 +15,7 @@ import {
     setScore,
     setSlotCount,
     setSlotValues,
+    removeUsedGalapon,
 } from '../features/user/userSlice'
 import { checkBingo } from './Bingo'
 import {
@@ -26,6 +27,7 @@ import { GROUP } from '../app/const'
 import { selectGroup } from '../features/group/groupSlice'
 
 export interface GalaponProps {
+    id: string
     galable?: boolean
     slotCount?: number
 }
@@ -126,6 +128,7 @@ export default function Galapon(props: GalaponProps) {
                 onClick={() => {
                     galapon(props.slotCount)
                     setDisabled(true)
+                    dispatch(removeUsedGalapon(props.id))
                 }}
                 disabled={!props.galable || disabled}
             >

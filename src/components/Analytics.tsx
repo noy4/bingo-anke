@@ -29,7 +29,7 @@ import { CreatePostInput } from '../API'
 import { questionsA } from '../app/questions/questionsA'
 import { questionsB } from '../app/questions/questionsB'
 import { evaluationQuestions } from '../app/questions/evaluationQuestions'
-import { GROUP, Question } from '../app/const'
+import { FIVE_POINT, GROUP, Question } from '../app/const'
 import { bonusQuestions } from '../app/questions/bonusQuestions'
 
 const formatTime = (time: number) => {
@@ -105,7 +105,6 @@ const Analytics = () => {
         {
             title: 'グループ',
             field: 'group',
-            defaultSort: 'asc' as const,
             ...cell(150),
         },
         {
@@ -137,8 +136,14 @@ const Analytics = () => {
             ...cell(150),
         },
         {
+            title: '未使用ガラポン',
+            field: 'unusedGalapons',
+            ...cell(150),
+        },
+        {
             title: '実験開始時刻',
             field: 'experimentTime',
+            defaultSort: 'desc' as const,
             type: 'numeric' as const,
             render: (rowData: any) =>
                 moment(rowData.startTime).format('MM/DD HH:mm'),
@@ -277,36 +282,39 @@ const Analytics = () => {
             }
         )
 
-        const addTotal = (data: any, byColumn: any) => {
-            const keys = Object.keys(data[0])
-            console.log(keys)
+        const getQIds = (questions: Question[], prefix: string) =>
+            questions.reduce((acc: any, el: any) => {
+                if (el.type === FIVE_POINT) {
+                    return [...acc, `${prefix}-${el.id}`]
+                } else return [...acc]
+            }, [])
 
-            const total = data.reduce((acc: any, el: any) => {
-                return (acc += el[byColumn])
-            }, 0)
+        const a = getQIds(questionsA, 'A')
+        const b = getQIds(questionsB, 'B')
+        const ev = getQIds(evaluationQuestions, 'ev')
+        const bo = getQIds(bonusQuestions, 'bo')
+        const keys = [...a, ...b, ...ev, ...bo]
 
-            const totalRow: {
-                [key: string]: string
+        const addAverage = (data: any, keys: string[]) => {
+            const averages: {
+                [key: string]: string | number
             } = {}
-            const emptyRow: {
-                [key: string]: string
-            } = {}
-            for (const key of keys) {
-                if (key === 'group') {
-                    totalRow[key] = 'Total'
-                    emptyRow[key] = '/z'
-                } else if (key === byColumn) {
-                    totalRow[key] = total
-                } else {
-                    // totalRow[key] = ''
-                }
-                // emptyRow[key] = ''
-            }
-            console.log(totalRow)
-            return [...data, emptyRow, totalRow]
+            keys.forEach((v) => {
+                let counter = 0
+                averages[v] =
+                    data.reduce((acc: any, el: any) => {
+                        if (el[v]) {
+                            counter++
+                            return acc + (Number(el[v]) || 0)
+                        } else return acc
+                    }, 0) / counter
+                averages[v] = Number(averages[v]).toFixed(2)
+            })
+            averages['group'] = 'Average'
+            return [...data, averages]
         }
 
-        setPosts(addTotal(newPosts, 'score') as never)
+        setPosts(addAverage(newPosts, keys) as never)
     }
 
     useEffect(() => {

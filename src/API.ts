@@ -15,6 +15,7 @@ export type CreatePostInput = {
   experimentEndTime?: number | null,
   evaluationEndTime?: number | null,
   bonusEndTime?: number | null,
+  unusedGalapons?: string | null,
 };
 
 export type ModelPostConditionInput = {
@@ -29,6 +30,7 @@ export type ModelPostConditionInput = {
   experimentEndTime?: ModelIntInput | null,
   evaluationEndTime?: ModelIntInput | null,
   bonusEndTime?: ModelIntInput | null,
+  unusedGalapons?: ModelStringInput | null,
   and?: Array< ModelPostConditionInput | null > | null,
   or?: Array< ModelPostConditionInput | null > | null,
   not?: ModelPostConditionInput | null,
@@ -99,6 +101,7 @@ export type UpdatePostInput = {
   experimentEndTime?: number | null,
   evaluationEndTime?: number | null,
   bonusEndTime?: number | null,
+  unusedGalapons?: string | null,
 };
 
 export type DeletePostInput = {
@@ -118,6 +121,7 @@ export type ModelPostFilterInput = {
   experimentEndTime?: ModelIntInput | null,
   evaluationEndTime?: ModelIntInput | null,
   bonusEndTime?: ModelIntInput | null,
+  unusedGalapons?: ModelStringInput | null,
   and?: Array< ModelPostFilterInput | null > | null,
   or?: Array< ModelPostFilterInput | null > | null,
   not?: ModelPostFilterInput | null,
@@ -180,6 +184,7 @@ export type CreatePostMutation = {
     experimentEndTime: number | null,
     evaluationEndTime: number | null,
     bonusEndTime: number | null,
+    unusedGalapons: string | null,
   } | null,
 };
 
@@ -203,6 +208,7 @@ export type UpdatePostMutation = {
     experimentEndTime: number | null,
     evaluationEndTime: number | null,
     bonusEndTime: number | null,
+    unusedGalapons: string | null,
   } | null,
 };
 
@@ -226,6 +232,7 @@ export type DeletePostMutation = {
     experimentEndTime: number | null,
     evaluationEndTime: number | null,
     bonusEndTime: number | null,
+    unusedGalapons: string | null,
   } | null,
 };
 
@@ -248,6 +255,7 @@ export type GetPostQuery = {
     experimentEndTime: number | null,
     evaluationEndTime: number | null,
     bonusEndTime: number | null,
+    unusedGalapons: string | null,
   } | null,
 };
 
@@ -274,6 +282,7 @@ export type ListPostsQuery = {
       experimentEndTime: number | null,
       evaluationEndTime: number | null,
       bonusEndTime: number | null,
+      unusedGalapons: string | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -305,6 +314,7 @@ export type ListPostsSortedByBingoCountAndScoreQuery = {
       experimentEndTime: number | null,
       evaluationEndTime: number | null,
       bonusEndTime: number | null,
+      unusedGalapons: string | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -325,6 +335,7 @@ export type OnCreatePostSubscription = {
     experimentEndTime: number | null,
     evaluationEndTime: number | null,
     bonusEndTime: number | null,
+    unusedGalapons: string | null,
   } | null,
 };
 
@@ -343,6 +354,7 @@ export type OnUpdatePostSubscription = {
     experimentEndTime: number | null,
     evaluationEndTime: number | null,
     bonusEndTime: number | null,
+    unusedGalapons: string | null,
   } | null,
 };
 
@@ -361,5 +373,6 @@ export type OnDeletePostSubscription = {
     experimentEndTime: number | null,
     evaluationEndTime: number | null,
     bonusEndTime: number | null,
+    unusedGalapons: string | null,
   } | null,
 };

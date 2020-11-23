@@ -28,6 +28,7 @@ export interface UserState {
         bonus: Answer
         [key: string]: Answer
     }
+    unusedGalapons: string[]
     rankInfo: {
         prev: number
         current: number
@@ -66,6 +67,7 @@ export const initialState: UserState = {
         evaluation: {},
         bonus: {},
     }, // 回答
+    unusedGalapons: [],
     userId: '',
     startTime: 0,
 }
@@ -83,6 +85,16 @@ export const userSlice = createSlice({
         setAnswers: (state, action) => {
             const { key, value } = action.payload
             state.answers[key] = { ...state.answers[key], ...value }
+        },
+        setUnusedGalapons: (state, action) => {
+            state.unusedGalapons = action.payload
+        },
+        removeUsedGalapon: (state, action) => {
+            state.unusedGalapons = state.unusedGalapons.filter(
+                (v) => v !== action.payload
+            )
+            console.log(action.payload)
+            console.log(state.unusedGalapons)
         },
         updateRankingCard: (state, action) => {
             const index = state.rankers.findIndex((ranker) => ranker.iam)
@@ -195,6 +207,8 @@ export const {
     setUserId,
     setStartTime,
     setNewIam,
+    setUnusedGalapons,
+    removeUsedGalapon,
 } = userSlice.actions
 
 export const selectBingoCount = (state: State) => state.user.bingoCount
@@ -208,5 +222,6 @@ export const selectRankers = (state: State) => state.user.rankers
 export const selectRankInfo = (state: State) => state.user.rankInfo
 export const selectUserId = (state: State) => state.user.userId
 export const selectStartTime = (state: State) => state.user.startTime
+export const selectUnusedGalapons = (state: State) => state.user.unusedGalapons
 
 export default userSlice.reducer

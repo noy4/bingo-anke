@@ -92,7 +92,6 @@ const Survey = (props: SurveyProps) => {
             const value =
                 target.type === 'checkbox' ? target.checked : target.value
             const name = target.name
-            console.log(name, value)
             dispatch(setAnswers({ key: props.type, value: { [name]: value } }))
             if (['familyName', 'displayName', 'from'].includes(name)) {
                 dispatch(updateRankingCard({ key: name, value }))
@@ -136,6 +135,7 @@ const Survey = (props: SurveyProps) => {
                         />
                         {props.bingo && (
                             <Galapon
+                                id={item.id}
                                 slotCount={item.slotCount}
                                 galable={Boolean(
                                     answers[props.type].firstName?.trim() &&
@@ -162,6 +162,7 @@ const Survey = (props: SurveyProps) => {
                         />
                         {props.bingo && (
                             <Galapon
+                                id={item.id}
                                 slotCount={item.slotCount}
                                 galable={Boolean(
                                     answers[props.type].familyName?.trim() ||
@@ -186,6 +187,7 @@ const Survey = (props: SurveyProps) => {
                         />
                         {props.bingo && (
                             <Galapon
+                                id={item.id}
                                 slotCount={item.slotCount}
                                 galable={Boolean(
                                     answers[props.type].from?.trim()
@@ -217,6 +219,7 @@ const Survey = (props: SurveyProps) => {
                         </RadioGroup>
                         {props.bingo && (
                             <Galapon
+                                id={item.id}
                                 slotCount={item.slotCount}
                                 galable={Boolean(answers[props.type].sex)}
                             />
@@ -252,6 +255,7 @@ const Survey = (props: SurveyProps) => {
                         </Grid>
                         {props.bingo && (
                             <Galapon
+                                id={item.id}
                                 slotCount={item.slotCount}
                                 galable={Boolean(answers[props.type][item.id])}
                             />
@@ -273,6 +277,7 @@ const Survey = (props: SurveyProps) => {
                         />
                         {props.bingo && (
                             <Galapon
+                                id={item.id}
                                 slotCount={item.slotCount}
                                 galable={Boolean(
                                     answers[props.type][item.id]?.trim()
@@ -304,6 +309,7 @@ const Survey = (props: SurveyProps) => {
                         />
                         {props.bingo && (
                             <Galapon
+                                id={item.id}
                                 slotCount={item.slotCount}
                                 galable={Boolean(
                                     answers[props.type][item.id]?.trim()

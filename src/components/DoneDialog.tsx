@@ -21,6 +21,7 @@ import {
     selectDoneDialog,
     selectStep,
     setDoneDialog,
+    setDrawer,
 } from '../features/system/systemSlice'
 import {
     resetBingoCard,
@@ -48,6 +49,8 @@ const DoneDialog = () => {
             description = DIALOG.INTRODUCTION.DESCRIPTION
             onClick = () => {
                 dispatch(setDoneDialog(false))
+                ![GROUP.A1, GROUP.B1].includes(group) &&
+                    dispatch(setDrawer(true))
                 dispatch(setStartTime(Date.now()))
             }
             break

@@ -19,4 +19,5 @@ type Post
     experimentEndTime: AWSTimestamp
     evaluationEndTime: AWSTimestamp
     bonusEndTime: AWSTimestamp
+    unusedGalapons: AWSJSON
 }

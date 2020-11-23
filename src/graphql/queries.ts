@@ -16,6 +16,7 @@ export const getPost = /* GraphQL */ `
       experimentEndTime
       evaluationEndTime
       bonusEndTime
+      unusedGalapons
     }
   }
 `;
@@ -39,6 +40,7 @@ export const listPosts = /* GraphQL */ `
         experimentEndTime
         evaluationEndTime
         bonusEndTime
+        unusedGalapons
       }
       nextToken
     }
@@ -74,6 +76,7 @@ export const listPostsSortedByBingoCountAndScore = /* GraphQL */ `
         experimentEndTime
         evaluationEndTime
         bonusEndTime
+        unusedGalapons
       }
       nextToken
     }
