@@ -1,9 +1,11 @@
 export const INTRODUCTION = 'introduction'
+export const ABOUT_BINGO = 'about_bingo'
 export const EXPERIMENT = 'experiment'
 export const EVALUATION = 'evaluation'
 export const BONUS = 'bonus'
 export type Step =
     | typeof INTRODUCTION
+    | typeof ABOUT_BINGO
     | typeof EXPERIMENT
     | typeof EVALUATION
     | typeof BONUS
@@ -25,10 +27,15 @@ export const DIALOG = {
             公開名には、電話番号、住所、他のウェブサイトで使っているパスワードなど、個人情報を記入しないようご注意ください。
             ではまず1つ目のアンケートへの回答をお願いします。`,
     },
-    EXPERIMENT: {
-        TITLE: '回答を送信しました。',
+    ABOUT_BINGO: {
+        TITLE: 'ビンゴについて',
         DESCRIPTION:
-            'ありがとうございます。続いて2つ目のアンケートへの回答をお願いします。',
+            '各設問の終わりにあるガラポンボタンを押すとビンゴが遊べます。',
+    },
+    EXPERIMENT: {
+        TITLE: 'アンケート1は以上です。',
+        DESCRIPTION:
+            'ありがとうございます。続いてアンケート2への回答をお願いします。',
     },
     EVALUATION: {
         TITLE: '回答を送信しました。',

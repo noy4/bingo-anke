@@ -85,7 +85,7 @@ export const evaluationQuestions = [
         id: 'Q11',
         type: TEXTAREA,
         title:
-            'その他本調査アンケートについて、または以上回答への補足等何かありますか。',
+            'その他本調査アンケートについて、または以上回答への補足等何かあればお書きください。',
         slotCount: 20,
     },
 ]

@@ -61,18 +61,6 @@ export const questionsA = [
     },
     {
         id: 'Q8',
-        type: TEXTAREA,
-        title: 'どういう時に調査アンケートに答えますか。',
-        slotCount: 4,
-    },
-    {
-        id: 'Q9',
-        type: TEXTAREA,
-        title: 'どういう時に調査アンケートに答えないですか。',
-        slotCount: 4,
-    },
-    {
-        id: 'Q10',
         type: FIVE_POINT,
         title: '一般的に調査アンケートに回答することについてどう感じますか。',
         negative: 'つまらない',
@@ -80,7 +68,7 @@ export const questionsA = [
         slotCount: 4,
     },
     {
-        id: 'Q11',
+        id: 'Q9',
         type: FIVE_POINT,
         title:
             'つまらないと感じるアンケートは回答者へのメリットがないためだという仮定についてどう思いますか。',
@@ -89,19 +77,34 @@ export const questionsA = [
         slotCount: 4,
     },
     {
-        id: 'Q12',
+        id: 'Q10',
         type: NUMBER,
         title:
-            'あなたが一般的なアンケートに喜んで回答するには報酬はいくら以上必要だと思いますか。',
+            'もしもとある企業から所要時間30分のアンケートを依頼された場合、あなたが喜んで回答するには報酬はいくら以上必要だと思いますか。',
         unit: '円',
         slotCount: 4,
     },
     {
-        id: 'Q13',
+        id: 'Q11',
         type: NUMBER,
         title:
             '一般的に調査アンケートに答える際、設問が何問以上あると回答するのがしんどいと感じますか。',
         unit: '問',
+        slotCount: 4,
+    },
+    {
+        id: 'Q12',
+        type: NUMBER,
+        title:
+            '一般的に調査アンケートに答える際、回答に何分以上かかると回答するのがしんどいと感じますか。',
+        unit: '分',
+        slotCount: 4,
+    },
+    {
+        id: 'Q13',
+        type: TEXTAREA,
+        title:
+            'どういう時（及び条件）なら調査アンケートに答えてもいいと感じますか。',
         slotCount: 4,
     },
     {

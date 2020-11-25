@@ -22,6 +22,7 @@ import {
 } from '../features/user/userSlice'
 import {
     DISPLAY_NAME,
+    EXPERIMENT,
     FIVE_POINT,
     FROM,
     NAME,
@@ -51,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
     },
     rowRadio: {
         margin: '0',
+    },
+    sexRadio: {
+        marginLeft: theme.spacing(1),
     },
     questionTitle: {
         fontWeight: 'bold',
@@ -205,6 +209,7 @@ const Survey = (props: SurveyProps) => {
                             name="sex"
                             value={answers[props.type].sex || ''}
                             onChange={handleInputChange}
+                            className={classes.sexRadio}
                         >
                             <FormControlLabel
                                 value="male"
@@ -215,6 +220,11 @@ const Survey = (props: SurveyProps) => {
                                 value="female"
                                 control={<Radio />}
                                 label="女性"
+                            />
+                            <FormControlLabel
+                                value="other"
+                                control={<Radio />}
+                                label="その他"
                             />
                         </RadioGroup>
                         {props.bingo && (
@@ -359,7 +369,7 @@ const Survey = (props: SurveyProps) => {
                             color="primary"
                             disabled={props.loading || props.success}
                         >
-                            送信
+                            {props.type === EXPERIMENT ? '次へ' : '送信'}
                         </Button>
                         {props.loading && (
                             <CircularProgress

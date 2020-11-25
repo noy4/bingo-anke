@@ -83,7 +83,7 @@ export const questionsB = [
     {
         id: 'Q11',
         type: FIVE_POINT,
-        title: '先生の人柄や生き方から学ぶ',
+        title: '自由な時間を楽しむ',
         negative: '求めない',
         positive: '求める',
         slotCount: 4,
@@ -91,7 +91,7 @@ export const questionsB = [
     {
         id: 'Q12',
         type: FIVE_POINT,
-        title: '自由な時間を楽しむ',
+        title: '課外活動に取り組む',
         negative: '求めない',
         positive: '求める',
         slotCount: 4,
@@ -99,17 +99,15 @@ export const questionsB = [
     {
         id: 'Q13',
         type: FIVE_POINT,
-        title: '課外活動に取り組む',
-        negative: '求めない',
-        positive: '求める',
+        title: 'あなたは、大学生活に満足していますか、それとも不満ですか。',
+        negative: '不満',
+        positive: '満足',
         slotCount: 4,
     },
     {
         id: 'Q14',
-        type: FIVE_POINT,
-        title: 'あなたは、大学生活に満足していますか、それとも不満ですか。',
-        negative: '不満',
-        positive: '満足',
+        type: TEXTAREA,
+        title: 'Q13について、なぜそのように回答しましたか。',
         slotCount: 4,
     },
     {

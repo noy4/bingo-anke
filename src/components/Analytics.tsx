@@ -120,7 +120,7 @@ const Analytics = () => {
         {
             title: '性別',
             field: 'sex',
-            lookup: { male: '男', female: '女' },
+            lookup: { male: '男', female: '女', other: 'その他' },
             ...cell(100),
         },
         {

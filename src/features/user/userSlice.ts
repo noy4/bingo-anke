@@ -93,8 +93,6 @@ export const userSlice = createSlice({
             state.unusedGalapons = state.unusedGalapons.filter(
                 (v) => v !== action.payload
             )
-            console.log(action.payload)
-            console.log(state.unusedGalapons)
         },
         updateRankingCard: (state, action) => {
             const index = state.rankers.findIndex((ranker) => ranker.iam)

@@ -9,6 +9,7 @@ import {
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    ABOUT_BINGO,
     BONUS,
     DIALOG,
     EVALUATION,
@@ -22,6 +23,7 @@ import {
     selectStep,
     setDoneDialog,
     setDrawer,
+    setStep,
 } from '../features/system/systemSlice'
 import {
     resetBingoCard,
@@ -47,6 +49,17 @@ const DoneDialog = () => {
         case INTRODUCTION:
             title = DIALOG.INTRODUCTION.TITLE
             description = DIALOG.INTRODUCTION.DESCRIPTION
+            onClick = () => {
+                dispatch(setDoneDialog(false))
+                if (![GROUP.A1, GROUP.B1].includes(group)) {
+                    dispatch(setStep(ABOUT_BINGO))
+                    dispatch(setDoneDialog(true))
+                }
+            }
+            break
+        case ABOUT_BINGO:
+            title = DIALOG.ABOUT_BINGO.TITLE
+            description = DIALOG.ABOUT_BINGO.DESCRIPTION
             onClick = () => {
                 dispatch(setDoneDialog(false))
                 ![GROUP.A1, GROUP.B1].includes(group) &&
