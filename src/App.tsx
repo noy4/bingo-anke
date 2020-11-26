@@ -117,12 +117,36 @@ const App = () => {
         dispatch(setRankers(newRankers))
     }
 
+    const getRandomGroup = (type = '') => {
+        const keys = Object.keys(GROUP)
+        let length = keys.length
+        let index
+        switch (type) {
+            case 'a':
+                length = keys.length - 3
+                index = Math.floor(Math.random() * length)
+                break
+            case 'b':
+                length = keys.length - 3
+                index = Math.floor(Math.random() * length) + 3
+                break
+
+            default:
+                index = Math.floor(Math.random() * length)
+                break
+        }
+        return GROUP[keys[index]]
+    }
+    const randomGroup = getRandomGroup()
+    const randomA = getRandomGroup('a')
+    const randomB = getRandomGroup('b')
+
     useEffect(() => {
         const path = location.pathname
         dispatch(setGroup(path))
         if ([GROUP.A2, GROUP.B2].includes(path)) {
             dispatch(setBingo(true))
-        } else if (['/', GROUP.A3, GROUP.B3].includes(path)) {
+        } else if ([GROUP.A3, GROUP.B3].includes(path)) {
             dispatch(setBingo(true))
             dispatch(setRanking(true))
         }
@@ -137,7 +161,6 @@ const App = () => {
         <div className={classes.root}>
             <CssBaseline />
             <Switch>
-                <Route exact path="/" />
                 <Route exact path={GROUP.A1} />
                 <Route exact path={GROUP.A2} />
                 <Route exact path={GROUP.A3} />
@@ -145,6 +168,9 @@ const App = () => {
                 <Route exact path={GROUP.B2} />
                 <Route exact path={GROUP.B3} />
                 <Route exact path="/analytics" component={Analytics} />
+                <Redirect exact path="/a" to={randomA} />
+                <Redirect exact path="/b" to={randomB} />
+                <Redirect exact path="/" to={randomGroup} />
                 <Redirect path="*" to="/" />
             </Switch>
             <Container className={classes.container} maxWidth="xs">

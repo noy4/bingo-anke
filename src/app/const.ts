@@ -47,7 +47,7 @@ export const DIALOG = {
     },
 }
 
-export const GROUP = {
+export const GROUP: { [key: string]: string } = {
     A1: '/a-1',
     A2: '/a-2',
     A3: '/a-3',

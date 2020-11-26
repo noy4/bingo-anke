@@ -64,7 +64,7 @@ const ExperimentSurvey = () => {
         }
         setLoading(false)
         setSuccess(true)
-        if (![GROUP.A1, GROUP.B1].includes(group)) {
+        if ([GROUP.A2, GROUP.A3, GROUP.B2, GROUP.B3].includes(group)) {
             dispatch(setDrawer(true))
         }
         dispatch(setStep(EXPERIMENT))
@@ -77,7 +77,7 @@ const ExperimentSurvey = () => {
             setTitle(titleB)
             setQuestions(questionsB)
         }
-        if (![GROUP.A1, GROUP.B1].includes(group)) {
+        if ([GROUP.A2, GROUP.A3, GROUP.B2, GROUP.B3].includes(group)) {
             setBingo(true)
             const galapons = questions.reduce((acc: any, el: any) => {
                 return el.id === '問' ? [...acc] : [...acc, el.id]
