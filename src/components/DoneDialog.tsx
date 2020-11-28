@@ -51,6 +51,7 @@ const DoneDialog = () => {
             description = DIALOG.INTRODUCTION.DESCRIPTION
             onClick = () => {
                 dispatch(setDoneDialog(false))
+                dispatch(setStartTime(Date.now()))
                 if (![GROUP.A1, GROUP.B1].includes(group)) {
                     dispatch(setStep(ABOUT_BINGO))
                     dispatch(setDoneDialog(true))
