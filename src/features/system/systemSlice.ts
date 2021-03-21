@@ -23,8 +23,8 @@ export const initialState: SystemState = {
     progress: 0, // プログレスバー
     drawer: false, // ドロワー
     modal: false, // モーダル
-    evaluation: false,
-    bonus: false,
+    evaluation: true,
+    bonus: true,
     step: INTRODUCTION,
     doneDialog: true, // 完了ダイアログ
     rankNotice: false, // 順位上昇通知

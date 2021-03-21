@@ -42,6 +42,7 @@ import {
 import { setRankers } from './features/user/userSlice'
 import { setGroup } from './features/group/groupSlice'
 import Analytics from './components/Analytics'
+import Statistics from './components/Statistics'
 
 Amplify.configure(awsmobile)
 PubSub.configure(awsmobile)
@@ -167,10 +168,12 @@ const App = () => {
                 <Route exact path={GROUP.B1} />
                 <Route exact path={GROUP.B2} />
                 <Route exact path={GROUP.B3} />
-                <Route exact path="/analytics" component={Analytics} />
+                {/* <Route exact path="/analytics" component={Analytics} /> */}
+                {/* <Route exact path="/statistics" component={Statistics} /> */}
                 <Redirect exact path="/a" to={randomA} />
                 <Redirect exact path="/b" to={randomB} />
-                <Redirect exact path="/" to={randomGroup} />
+                {/* <Redirect exact path="/" to={randomGroup} /> */}
+                <Redirect exact path="/" to="/a-3" />
                 <Redirect path="*" to="/" />
             </Switch>
             <Container className={classes.container} maxWidth="xs">

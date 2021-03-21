@@ -102,19 +102,78 @@ const Analytics = () => {
         })
     }
     const columns = [
-        {
-            title: 'グループ',
-            field: 'group',
-            ...cell(150),
-        },
-        {
-            title: '名前',
-            field: 'name',
-            render: (rowData: any) => {
-                return rowData.familyName + (rowData.firstName || '')
-            },
-            ...cell(100),
-        },
+        { title: 'グループ', field: 'group', ...cell(150) },
+        { title: '姓', field: 'familyName', ...cell(150) },
+        { title: '名', field: 'firstName', ...cell(150) },
+        { title: '開始時刻', field: 'startTime', ...cell(150) },
+        { title: '実験終了時刻', field: 'experimentEndTime', ...cell(150) },
+        { title: '評価終了時刻', field: 'evaluationEndTime', ...cell(150) },
+        { title: 'おまけ終了時刻', field: 'bonusEndTime', ...cell(150) },
+        // {
+        //     title: '名前',
+        //     field: 'name',
+        //     render: (rowData: any) => {
+        //         return rowData.familyName + (rowData.firstName || '')
+        //     },
+        //     ...cell(150),
+        // },
+        // {
+        //     title: '実験開始時刻',
+        //     field: 'experimentTime',
+        //     defaultSort: 'desc' as const,
+        //     type: 'numeric' as const,
+        //     render: (rowData: any) =>
+        //         moment(rowData.startTime).format('MM/DD HH:mm'),
+        //     ...cell(150),
+        //     customSort: (a: any, b: any) => a.startTime - b.startTime,
+        // },
+        // {
+        //     title: '実験時間',
+        //     field: 'experimentTime',
+        //     type: 'numeric' as const,
+        //     render: (rowData: any) =>
+        //         formatTime(
+        //             Number(rowData.experimentEndTime) -
+        //                 Number(rowData.startTime)
+        //         ),
+        //     ...cell(150),
+        //     customSort: (a: any, b: any) =>
+        //         a.experimentEndTime -
+        //         a.startTime -
+        //         (b.experimentEndTime - b.startTime),
+        // },
+        // {
+        //     title: '評価時間',
+        //     field: 'evaluationTime',
+        //     type: 'numeric' as const,
+        //     render: (rowData: any) => {
+        //         const time =
+        //             Number(rowData.evaluationEndTime) -
+        //             Number(rowData.experimentEndTime)
+        //         return formatTime(time < 0 ? 0 : time)
+        //     },
+        //     ...cell(150),
+        //     customSort: (a: any, b: any) =>
+        //         a.evaluationEndTime -
+        //         a.experimentEndTime -
+        //         (b.evaluationEndTime - b.experimentEndTime),
+        // },
+        // {
+        //     title: 'おまけ時間',
+        //     field: 'bonusTime',
+        //     type: 'numeric' as const,
+        //     render: (rowData: any) => {
+        //         const time =
+        //             Number(rowData.bonusEndTime) -
+        //             Number(rowData.evaluationEndTime)
+        //         return formatTime(time < 0 ? 0 : time)
+        //     },
+        //     ...cell(150),
+        //     customSort: (a: any, b: any) =>
+        //         a.bonusEndTime -
+        //         a.evaluationEndTime -
+        //         (b.bonusEndTime - b.evaluationEndTime),
+        // },
         { title: '公開名', field: 'displayName', ...cell(150) },
         { title: '所属', field: 'from', ...cell(100) },
         {
@@ -139,47 +198,6 @@ const Analytics = () => {
             title: '未使用ガラポン',
             field: 'unusedGalapons',
             ...cell(150),
-        },
-        {
-            title: '実験開始時刻',
-            field: 'experimentTime',
-            defaultSort: 'desc' as const,
-            type: 'numeric' as const,
-            render: (rowData: any) =>
-                moment(rowData.startTime).format('MM/DD HH:mm'),
-            ...cell(150),
-            customSort: (a: any, b: any) => a.startTime - b.startTime,
-        },
-        {
-            title: '実験時間',
-            field: 'experimentTime',
-            type: 'numeric' as const,
-            render: (rowData: any) =>
-                formatTime(
-                    Number(rowData.experimentEndTime) -
-                        Number(rowData.startTime)
-                ),
-            ...cell(150),
-            customSort: (a: any, b: any) =>
-                a.experimentEndTime -
-                a.startTime -
-                (b.experimentEndTime - b.startTime),
-        },
-        {
-            title: '評価時間',
-            field: 'evaluationTime',
-            type: 'numeric' as const,
-            render: (rowData: any) => {
-                const time =
-                    Number(rowData.evaluationEndTime) -
-                    Number(rowData.experimentEndTime)
-                return formatTime(time < 0 ? 0 : time)
-            },
-            ...cell(150),
-            customSort: (a: any, b: any) =>
-                a.evaluationEndTime -
-                a.experimentEndTime -
-                (b.evaluationEndTime - b.experimentEndTime),
         },
         ...getQuestions('A'),
         ...getQuestions('B'),
@@ -328,10 +346,10 @@ const Analytics = () => {
                 options={{
                     exportButton: true,
                     exportAllData: true,
-                    pageSize: 20,
-                    // doubleHorizontalScroll: true,
+                    pageSize: 100,
                     maxBodyHeight: '78vh',
                     columnsButton: true,
+                    grouping: true,
                 }}
                 icons={tableIcons}
                 columns={columns}
