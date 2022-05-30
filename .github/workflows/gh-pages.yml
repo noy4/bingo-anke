@@ -21,24 +21,20 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Get npm cache
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm cache dir)"
-
       - name: Cache dependencies
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-
+            ${{ runner.os }}-node-
 
-      - run: npm install --frozen-lockfile
+      - run: npm ci
       - run: npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
