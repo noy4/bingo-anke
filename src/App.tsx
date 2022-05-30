@@ -4,7 +4,8 @@ import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 
 import Amplify from '@aws-amplify/core'
 import PubSub from '@aws-amplify/pubsub'
-import awsmobile from './aws-exports'
+// import awsmobile from './aws-exports'
+const awsmobile = {}
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { CreatePostInput } from './API'
 import { listPostsSortedByBingoCountAndScore } from './graphql/queries'
@@ -91,15 +92,16 @@ const App = () => {
                 nextToken: nextToken,
             })
         )
-        const newRankers = res.data.listPostsSortedByBingoCountAndScore.items.map(
-            (post: CreatePostInput) => ({
-                rank: 0,
-                name: post.displayName,
-                from: post.from,
-                bingoCount: post.bingoCount,
-                score: post.score,
-            })
-        )
+        const newRankers =
+            res.data.listPostsSortedByBingoCountAndScore.items.map(
+                (post: CreatePostInput) => ({
+                    rank: 0,
+                    name: post.displayName,
+                    from: post.from,
+                    bingoCount: post.bingoCount,
+                    score: post.score,
+                })
+            )
         newRankers.sort(
             (a: CreatePostInput, b: CreatePostInput) => b.score - a.score
         )
