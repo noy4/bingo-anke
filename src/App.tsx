@@ -5,7 +5,6 @@ import { Switch, Route, Redirect, useLocation } from 'react-router-dom'
 import Amplify from '@aws-amplify/core'
 import PubSub from '@aws-amplify/pubsub'
 // import awsmobile from './aws-exports'
-const awsmobile = {}
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { CreatePostInput } from './API'
 import { listPostsSortedByBingoCountAndScore } from './graphql/queries'
@@ -45,6 +44,7 @@ import { setGroup } from './features/group/groupSlice'
 import Analytics from './components/Analytics'
 import Statistics from './components/Statistics'
 
+const awsmobile = {}
 Amplify.configure(awsmobile)
 PubSub.configure(awsmobile)
 
