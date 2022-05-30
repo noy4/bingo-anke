@@ -158,7 +158,7 @@ const App = () => {
         document.addEventListener('scroll', () =>
             dispatch(calculateScrollRate())
         )
-    }, [dispatch, location.pathname])
+    }, [dispatch, location.pathname, getPosts])
 
     return (
         <div className={classes.root}>

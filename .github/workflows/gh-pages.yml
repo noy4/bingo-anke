@@ -6,9 +6,6 @@ on:
             - master
     pull_request:
 
-env:
-    DISABLE_ESLINT_PLUGIN: true
-
 jobs:
     deploy:
         runs-on: ubuntu-20.04
